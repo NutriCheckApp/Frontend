@@ -5,7 +5,12 @@ import styles from './Main.module.css';
 const Main = () => {
   return (
     <div className={styles.container}>
-      <img className={styles.backgroundIcon} alt="" />
+      <img 
+        className={styles.backgroundIcon} 
+        src="/background.png" 
+        alt="배경"
+      />
+
       <Header />
       <div className={styles.imageContainer}>
         <img className={styles.image1} alt="" />
