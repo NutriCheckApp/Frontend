@@ -1,0 +1,83 @@
+.header {
+  position: absolute;
+  top: 35px;
+  left: 330px;
+  width: 1058px;
+  height: 60px;
+}
+
+.child {
+  position: absolute;
+  top: 1px;
+  left: calc(50% - 529px);
+  border-radius: 100px;
+  background-color: #fff;
+  width: 780px;
+  height: 59px;
+}
+
+.menu1 {
+  position: absolute;
+  top: 15px;
+  left: 480px;
+  font-size: 30px;
+  display: inline-block;
+  width: 108px;
+  height: 39px;
+}
+
+.menu2 {
+  position: absolute;
+  top: 20px;
+  left: 249px;
+  font-size: 20px;
+}
+
+.menu3 {
+  position: absolute;
+  top: 20px;
+  left: 439px;
+  font-size: 20px;
+}
+
+.item {
+  position: absolute;
+  top: 6px;
+  left: calc(50% - 519px);
+  border-radius: 100px;
+  background-color: #f6f6f6;
+  width: 156px;
+  height: 49px;
+}
+
+.menu4 {
+  position: absolute;
+  top: 19px;
+  left: 52px;
+  font-size: 20px;
+}
+
+.menu5 {
+  position: absolute;
+  top: 20px;
+  left: 616px;
+  font-size: 20px;
+}
+
+.profileCircle {
+  position: absolute;
+  top: 0px;
+  left: 998px;
+  border-radius: 50%;
+  background-color: #fff;
+  width: 60px;
+  height: 60px;
+}
+
+.profileIcon {
+  position: absolute;
+  top: 8px;
+  left: 1006px;
+  width: 44px;
+  height: 44px;
+}
