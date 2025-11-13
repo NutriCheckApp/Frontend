@@ -1,11 +1,11 @@
 .header {
   position: absolute;
   top: 35px;
-  left: 330px;
+  left: 60%; /* 50%로 변경 */
+  transform: translateX(-50%); /* 중앙 정렬 */
   width: 1058px;
   height: 60px;
 }
-
 .child {
   position: absolute;
   top: 1px;
@@ -15,31 +15,18 @@
   width: 780px;
   height: 59px;
 }
-
-.menu1 {
-  position: absolute;
-  top: 15px;
-  left: 480px;
-  font-size: 30px;
-  display: inline-block;
-  width: 108px;
-  height: 39px;
-}
-
 .menu2 {
   position: absolute;
   top: 20px;
   left: 249px;
   font-size: 20px;
 }
-
 .menu3 {
   position: absolute;
   top: 20px;
   left: 439px;
   font-size: 20px;
 }
-
 .item {
   position: absolute;
   top: 6px;
@@ -49,21 +36,18 @@
   width: 156px;
   height: 49px;
 }
-
 .menu4 {
   position: absolute;
   top: 19px;
   left: 52px;
   font-size: 20px;
 }
-
 .menu5 {
   position: absolute;
   top: 20px;
   left: 616px;
   font-size: 20px;
 }
-
 .profileCircle {
   position: absolute;
   top: 0px;
@@ -73,7 +57,6 @@
   width: 60px;
   height: 60px;
 }
-
 .profileIcon {
   position: absolute;
   top: 8px;

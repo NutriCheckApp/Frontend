@@ -10,17 +10,18 @@ const Main = () => {
         src="/background.png" 
         alt="배경"
       />
-
-      <Header />
-      <div className={styles.imageContainer}>
-        <img className={styles.image1} alt="" />
-        <img className={styles.image2} alt="" />
-        <img className={styles.image3} alt="" />
-        <img className={styles.image4} alt="" />
-      </div>
-      <div className={styles.mainText}>
-        건강 목표를 향한, <br />
-        스마트한 식단 솔루션
+      <div className={styles.contentWrapper}>
+        <Header />
+        <div className={styles.imageContainer}>
+          <img className={styles.image1} src="/food1.png" alt="" />
+          <img className={styles.image2} src="/food2.png" alt="/food2.png" />
+          <img className={styles.image3} src="/food1.png" alt="" />
+          <img className={styles.image4} src="/food2.png" alt="" />
+        </div>
+        <div className={styles.mainText}>
+          건강 목표를 향한, <br />
+          스마트한 식단 솔루션
+        </div>
       </div>
     </div>
   );

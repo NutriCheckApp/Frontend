@@ -1,19 +1,52 @@
+@keyframes slideUp {
+  0% {
+    opacity: 0;
+    transform: translateY(50px); /* 위로만 이동 */
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes slideUpCenter {
+  0% {
+    opacity: 0;
+    transform: translate(-50%, 50px);
+  }
+  100% {
+    opacity: 1;
+    transform: translate(-50%, 0);
+  }
+}
+
+
+
 .container {
   width: 100%;
-  height: 1024px;
+  height: 100vh;
   position: relative;
-  background-color: #000;
+  background-color: #F6F6EF;
   overflow: hidden;
   text-align: left;
   font-size: 20px;
   color: #000;
   font-family: Pretendard;
+  display: flex;
+  justify-content: center;
+}
+
+.contentWrapper {
+  position: relative;
+  width: 1480px;
+  height: 835px;
 }
 
 .backgroundIcon {
   position: absolute;
-  top: 0px;
-  left: -37px;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
   width: 1565px;
   height: 1064px;
   object-fit: cover;
@@ -22,38 +55,40 @@
 .imageContainer {
   position: absolute;
   top: 278px;
-  left: 76px;
+  left: 50%;
+  transform: translateX(-50%);
   width: 1328px;
   height: 557px;
 }
+
 
 .image1 {
   position: absolute;
   top: 0px;
   left: 1175px;
   border-radius: 50px;
-  width: 153px;
-  height: 254px;
+  width: 170px;
+  height: 260px;
   object-fit: cover;
 }
 
 .image2 {
   position: absolute;
-  top: 303px;
+  top: 320px;
   left: 1052px;
   border-radius: 50px;
-  width: 153px;
-  height: 254px;
+  width: 170px;
+  height: 260px;
   object-fit: cover;
 }
 
 .image3 {
   position: absolute;
-  top: 303px;
+  top: 320px;
   left: 153px;
   border-radius: 50px;
-  width: 153px;
-  height: 254px;
+  width: 170px;
+  height: 260px;
   object-fit: cover;
 }
 
@@ -62,16 +97,24 @@
   top: 0px;
   left: 0px;
   border-radius: 50px;
-  width: 153px;
-  height: 254px;
+  width: 170px;
+  height: 260px;
   object-fit: cover;
 }
+.image1, .image2, .image3, .image4 {
+  animation: slideUp 1.2s ease-out forwards; /* ← 추가 */
+}
 
+/* mainText에 적용 */
 .mainText {
   position: absolute;
   top: 333px;
-  left: 335px;
+  left: 50%;
+  transform: translateX(-50%);
   font-size: 96px;
   font-weight: 600;
   text-align: center;
+  width: 900px;
+  opacity: 0;
+  animation: slideUpCenter 1.2s ease-out forwards;
 }
