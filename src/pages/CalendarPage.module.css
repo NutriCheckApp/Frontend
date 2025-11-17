@@ -1,0 +1,114 @@
+:root{
+  --bg-start:#e9f1f0;
+  --bg-end:#f5eafc;
+  --card-bg:#fff;
+  --muted:#8a8a8a;
+  --accent:#ff6b6b;
+}
+
+.wrap{
+  min-height:100vh;
+  background: linear-gradient(135deg,var(--bg-start),var(--bg-end));
+  padding:120px 24px 40px 24px;
+  box-sizing:border-box;
+  position:relative;
+  overflow:hidden;
+}
+
+.bgImage{
+  position:absolute;
+  inset:0;
+  width:100%;
+  height:100%;
+  object-fit:cover;
+  filter: blur(14px) saturate(0.8) grayscale(0.06);
+  opacity:0.18;
+  z-index:0;
+}
+
+.bgOverlay{
+  position:absolute;
+  inset:0;
+  background: linear-gradient(rgba(255,255,255,0.22), rgba(255,255,255,0.18));
+  z-index:0;
+  pointer-events:none;
+}
+
+.headerWrapper{max-width:1100px;margin:0 auto 28px auto;position:relative;min-height:120px;z-index:1}
+
+.container{
+  max-width:1100px;
+  margin:0 auto;
+  display:flex;
+  gap:28px;
+  align-items:flex-start;
+  position:relative;
+  z-index:1;
+}
+
+.leftCard,.rightCard{
+  background:var(--card-bg);
+  border-radius:12px;
+  padding:24px;
+  box-shadow:0 12px 30px rgba(22,45,80,0.06);
+  position:relative;
+  z-index:1;
+}
+.leftCard{width:420px}
+.rightCard{flex:1}
+
+/* Calendar specific */
+.calendarCard{display:flex;flex-direction:column;gap:12px}
+.calHeader{display:flex;align-items:center;justify-content:space-between}
+.monthTitle{font-weight:700;color:#333}
+.calNav button{background:transparent;border:none;font-size:20px;cursor:pointer}
+.weekdaysGrid{display:grid;grid-template-columns:repeat(7,1fr);color:var(--muted);font-size:13px}
+.weekday{text-align:center;padding:6px 0}
+.daysGrid{display:flex;flex-direction:column;gap:8px}
+.weekRow{display:grid;grid-template-columns:repeat(7,1fr);gap:8px}
+.dayCell{
+  min-height:56px;
+  border-radius:10px;
+  display:flex;
+  align-items:center; /* center vertically */
+  justify-content:center; /* center horizontally */
+  padding:8px;
+  cursor:pointer;
+  color:#333;
+  border:1px solid transparent;
+  box-sizing:border-box; /* ensure borders don't change layout */
+}
+.dayNumber{font-size:14px;margin:0}
+.today{background:#ff6b6b;color:#fff;display:flex;align-items:center;justify-content:center}
+.selected{
+  background:#ffdede;
+  /* use subtle glow instead of changing border to avoid layout shift */
+  box-shadow: 0 6px 18px rgba(255,107,107,0.08);
+}
+
+.rightHeader{display:flex;justify-content:space-between;align-items:center;margin-bottom:12px}
+.selectedDateDisplay{display:flex;align-items:center;gap:12px;font-weight:700}
+.dayNav{background:transparent;border:none;font-size:20px;cursor:pointer}
+.dateText{font-size:16px}
+
+/* Meals */
+.mealTabsBar{display:flex;gap:12px;margin-bottom:12px}
+.mealTabBtn{background:#f0f0f0;border:none;padding:8px 16px;border-radius:999px;cursor:pointer}
+.mealTabBtn.activeTab{background:#e9f1f0}
+.mealContent{min-height:220px}
+.mealCard{display:flex;flex-direction:column;gap:12px}
+.mealTabs{display:flex;gap:8px}
+.tab{background:#f3f3f3;padding:6px 10px;border-radius:999px}
+.mealList{display:flex;flex-direction:column;gap:12px}
+.mealItem{display:flex;align-items:center;gap:12px;padding:10px;border-radius:8px}
+.thumb{width:60px;height:60px;object-fit:cover;border-radius:8px}
+.mealInfo{flex:1}
+.mealName{font-weight:600}
+.mealKcal{color:var(--muted);font-size:13px}
+.writeBtn{background:transparent;border:none;color:var(--muted);cursor:pointer}
+.empty{color:var(--muted);text-align:center;padding:28px}
+
+@media(max-width:900px){
+  .container{flex-direction:column;padding:0 12px}
+  .leftCard{width:100%}
+}

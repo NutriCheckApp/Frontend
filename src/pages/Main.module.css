@@ -24,7 +24,7 @@
 
 .container {
   width: 100%;
-  height: 100vh;
+  min-height: 100vh;
   position: relative;
   background-color: #F6F6EF;
   overflow: hidden;
@@ -34,6 +34,7 @@
   font-family: Pretendard;
   display: flex;
   justify-content: center;
+  padding-top: 100px;
 }
 
 .contentWrapper {
@@ -117,4 +118,53 @@
   width: 900px;
   opacity: 0;
   animation: slideUpCenter 1.2s ease-out forwards;
+}
+.scrollContainer {
+  width: 100%;
+  height: 100vh;
+  overflow-y: scroll;
+  /* scroll-snap-type: y mandatory;*/
+}
+
+.section {
+  width: 100%;
+  height: 100vh;
+  scroll-snap-align: start;
+}
+
+/* 두 번째 섹션 이후 내용 */
+.nextContent {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  height: 100%;
+  background-color:  #F6F6EF;
+  text-align: center;
+  color: #333;
+  font-family: Pretendard;
+}
+
+.nextContent h2 {
+  font-size: 60px;
+  font-weight: 700;
+  margin-bottom: 20px;
+  /*animation: slideUp 1.2s ease-out forwards;*/
+}
+
+.nextContent p {
+  font-size: 24px;
+  opacity: 0.8;
+  /*animation: slideUp 1.4s ease-out forwards;*/
+}
+
+.fadeSection {
+  opacity: 0;
+  transform: translateY(60px);
+  transition: opacity 1.2s ease, transform 1.2s ease;
+}
+
+.visible {
+  opacity: 1;
+  transform: translateY(0);
 }
