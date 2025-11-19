@@ -1,4 +1,5 @@
 import React, { useState, useRef, useEffect } from 'react';
+import { FaUser } from 'react-icons/fa';
 import { useNavigate, useLocation } from 'react-router-dom';
 import styles from './Header.module.css';
 
@@ -100,13 +101,13 @@ const Header = ({ onProfileClick }) => {
       >
         분석
       </b>
-      <b
+      {/* <b
         ref={menu4Ref}
         className={styles.menu4}
         onMouseEnter={() => handleMouseEnter(menu4Ref)}
       >
         식단추천
-      </b>
+      </b> */}
       <b
         ref={menu5Ref}
         className={styles.menu5}
@@ -127,13 +128,13 @@ const Header = ({ onProfileClick }) => {
         tabIndex={0}
         onKeyDown={(e) => { if (e.key === 'Enter') onProfileClick && onProfileClick(); }}
       />
-      <img
+      <div
         className={styles.profileIcon}
-        src="/profile.png"
-        alt=""
         onClick={() => onProfileClick && onProfileClick()}
         style={{ cursor: 'pointer' }}
-      />
+      >
+        <FaUser size={30} color="#222" />
+      </div>
     </div>
   );
 };

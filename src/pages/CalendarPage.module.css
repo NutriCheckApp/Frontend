@@ -6,10 +6,10 @@
   --accent:#ff6b6b;
 }
 
-.wrap{
+ .wrap{
   min-height:100vh;
   background: linear-gradient(135deg,var(--bg-start),var(--bg-end));
-  padding:120px 24px 40px 24px;
+  padding:0 24px 40px 24px;
   box-sizing:border-box;
   position:relative;
   overflow:hidden;
@@ -44,6 +44,7 @@
   align-items:flex-start;
   position:relative;
   z-index:1;
+  margin-top:0;
 }
 
 .leftCard,.rightCard{
@@ -67,7 +68,7 @@
 .daysGrid{display:flex;flex-direction:column;gap:8px}
 .weekRow{display:grid;grid-template-columns:repeat(7,1fr);gap:8px}
 .dayCell{
-  min-height:56px;
+  min-height:70px;
   border-radius:10px;
   display:flex;
   align-items:center; /* center vertically */
