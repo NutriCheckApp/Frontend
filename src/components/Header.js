@@ -10,9 +10,24 @@ const Header = ({ onProfileClick }) => {
   const menu5Ref = useRef(null);
   const navigate = useNavigate();
   const location = useLocation();
-  
   const [indicatorLeft, setIndicatorLeft] = useState(0);
+  const [hideHeader, setHideHeader] = useState(false);
+  const lastScrollY = useRef(0);
 
+  // 스크롤 시 헤더 숨김 처리
+  useEffect(() => {
+    const handleScroll = () => {
+      const currentY = window.scrollY;
+      if (currentY > lastScrollY.current && currentY > 60) {
+        setHideHeader(true);
+      } else {
+        setHideHeader(false);
+      }
+      lastScrollY.current = currentY;
+    };
+    window.addEventListener('scroll', handleScroll);
+    return () => window.removeEventListener('scroll', handleScroll);
+  }, []);
   // 초기 로드 시 캘린더(menu2) 중앙으로 설정
   useEffect(() => {
     if (menu2Ref.current) {
@@ -80,7 +95,14 @@ const Header = ({ onProfileClick }) => {
   };
 
   return (
-    <div className={styles.header} onMouseLeave={() => setIndicatorFromRef(getActiveRefFromPath())}>
+    <div
+      className={styles.header}
+      style={{
+        transform: hideHeader ? 'translate(-50%, -100px)' : 'translateX(-50%)',
+        transition: 'transform 0.35s cubic-bezier(0.4,0,0.2,1)',
+      }}
+      onMouseLeave={() => setIndicatorFromRef(getActiveRefFromPath())}
+    >
       <div className={styles.child} />
       
       <b
@@ -101,13 +123,7 @@ const Header = ({ onProfileClick }) => {
       >
         분석
       </b>
-      {/* <b
-        ref={menu4Ref}
-        className={styles.menu4}
-        onMouseEnter={() => handleMouseEnter(menu4Ref)}
-      >
-        식단추천
-      </b> */}
+
       <b
         ref={menu5Ref}
         className={styles.menu5}

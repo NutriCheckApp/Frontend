@@ -1,7 +1,7 @@
 .item {
   position: absolute;
   top: 6px;
-  left: calc(50% - 78px);
+  left: calc(50% - 88px);
   width: 156px;
   height: 49px;
   border-radius: 100px;
@@ -40,14 +40,14 @@
 .menu2 {
   position: absolute;
   top: 20px;
-  left: 380px;
+  left: 265px;
   font-size: 20px;
   z-index: 1;
 }
 .menu3 {
   position: absolute;
   top: 20px;
-  left: 570px;
+  left: 504px;
   font-size: 20px;
   z-index: 1;
 }
@@ -62,7 +62,7 @@
 .menu5 {
   position: absolute;
   top: 20px;
-  left: 751px;
+  left: 744px;
   font-size: 20px;
   z-index: 1;
 }
