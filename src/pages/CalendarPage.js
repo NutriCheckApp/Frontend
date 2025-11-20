@@ -93,7 +93,15 @@ const sampleMeals = {
   dinner: [],
 };
 
-const MealPanel = ({ selectedMeal }) => {
+const MealPanel = ({ selectedMeal, isFuture }) => {
+  if (isFuture) {
+    return (
+      <div className={styles.mealCard} style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', minHeight: 220 }}>
+        <div className={styles.recommendText}>식단을 추천받을 수 있습니다.</div>
+        <button className={styles.recommendBtn}>식단 추천받기</button>
+      </div>
+    );
+  }
   const list = selectedMeal === 'morning' ? sampleMeals.morning : selectedMeal === 'lunch' ? sampleMeals.lunch : sampleMeals.dinner;
   return (
     <div className={styles.mealCard}>
@@ -129,15 +137,16 @@ const CalendarPage = () => {
     });
   };
 
+  const today = new Date();
+  const isFuture = selected > today.setHours(0,0,0,0);
+
   return (
     <div className={styles.wrap}>
       <img src="/background.png" alt="bg" className={styles.bgImage} />
       <div className={styles.bgOverlay} />
-
       <div className={styles.headerWrapper}>
         <Header />
       </div>
-
       <div className={styles.container}>
         <div className={styles.leftCard}>
           <Calendar onSelect={(d) => setSelected(d)} selectedDate={selected} />
@@ -151,14 +160,13 @@ const CalendarPage = () => {
             </div>
             <div />
           </div>
-
           <div className={styles.mealTabsBar}>
             <button className={`${styles.mealTabBtn} ${mealTab === 'morning' ? styles.activeTab : ''}`} onClick={() => setMealTab('morning')}>아침</button>
             <button className={`${styles.mealTabBtn} ${mealTab === 'lunch' ? styles.activeTab : ''}`} onClick={() => setMealTab('lunch')}>점심</button>
             <button className={`${styles.mealTabBtn} ${mealTab === 'dinner' ? styles.activeTab : ''}`} onClick={() => setMealTab('dinner')}>저녁</button>
           </div>
           <div className={styles.mealContent}>
-            <MealPanel selectedMeal={mealTab} />
+            <MealPanel selectedMeal={mealTab} isFuture={isFuture} />
           </div>
         </div>
       </div>

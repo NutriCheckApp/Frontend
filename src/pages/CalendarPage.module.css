@@ -109,6 +109,32 @@
 .writeBtn{background:transparent;border:none;color:var(--muted);cursor:pointer}
 .empty{color:var(--muted);text-align:center;padding:28px}
 
+.recommendBtn {
+  margin-top: 18px;
+  padding: 14px 32px;
+  background: linear-gradient(90deg, #1976d2 0%, #42a5f5 100%);
+  color: #fff;
+  border: none;
+  border-radius: 24px;
+  font-size: 18px;
+  font-weight: 600;
+  box-shadow: 0 4px 16px rgba(33, 150, 243, 0.12);
+  cursor: pointer;
+  transition: background 0.2s, transform 0.15s;
+  letter-spacing: 0.5px;
+}
+.recommendBtn:hover {
+  background: linear-gradient(90deg, #1565c0 0%, #64b5f6 100%);
+  transform: translateY(-2px) scale(1.04);
+}
+.recommendText {
+  font-size: 17px;
+  color: #1976d2;
+  font-weight: 500;
+  margin-bottom: 8px;
+  text-align: center;
+}
+
 @media(max-width:900px){
   .container{flex-direction:column;padding:0 12px}
   .leftCard{width:100%}

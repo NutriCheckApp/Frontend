@@ -2,6 +2,7 @@ import React, { useState, useRef, useEffect } from 'react';
 import { FaUser } from 'react-icons/fa';
 import { useNavigate, useLocation } from 'react-router-dom';
 import styles from './Header.module.css';
+import NutriCheckLogo from './NutriCheckLogo';
 
 const Header = ({ onProfileClick }) => {
   const menu2Ref = useRef(null);
@@ -95,63 +96,68 @@ const Header = ({ onProfileClick }) => {
   };
 
   return (
-    <div
-      className={styles.header}
-      style={{
-        transform: hideHeader ? 'translate(-50%, -100px)' : 'translateX(-50%)',
-        transition: 'transform 0.35s cubic-bezier(0.4,0,0.2,1)',
-      }}
-      onMouseLeave={() => setIndicatorFromRef(getActiveRefFromPath())}
-    >
-      <div className={styles.child} />
-      
-      <b
-        ref={menu2Ref}
-        className={styles.menu2}
-        onMouseEnter={() => handleMouseEnter(menu2Ref)}
-        onClick={() => navigate('/calendar')}
-        style={{ cursor: 'pointer' }}
-      >
-        캘린더
-      </b>
-      <b
-        ref={menu3Ref}
-        className={styles.menu3}
-        onMouseEnter={() => handleMouseEnter(menu3Ref)}
-        onClick={() => navigate('/analysis')}
-        style={{ cursor: 'pointer' }}
-      >
-        분석
-      </b>
-
-      <b
-        ref={menu5Ref}
-        className={styles.menu5}
-        onMouseEnter={() => handleMouseEnter(menu5Ref)}
-      >
-        마이페이지
-      </b>
-
-      <div
-        className={styles.item}
-        style={{ left: `${indicatorLeft}px` }}
-      />
-
-      <div
-        className={styles.profileCircle}
-        onClick={() => onProfileClick && onProfileClick()}
-        role="button"
-        tabIndex={0}
-        onKeyDown={(e) => { if (e.key === 'Enter') onProfileClick && onProfileClick(); }}
-      />
-      <div
-        className={styles.profileIcon}
-        onClick={() => onProfileClick && onProfileClick()}
-        style={{ cursor: 'pointer' }}
-      >
-        <FaUser size={30} color="#222" />
+    <>
+      <div style={{position: 'fixed', top: 10, left: 180, zIndex: 1200}}>
+        <NutriCheckLogo type="compact" />
       </div>
-    </div>
+      <div
+        className={styles.header}
+        style={{
+          transform: hideHeader ? 'translate(-50%, -100px)' : 'translateX(-50%)',
+          transition: 'transform 0.35s cubic-bezier(0.4,0,0.2,1)',
+        }}
+        onMouseLeave={() => setIndicatorFromRef(getActiveRefFromPath())}
+      >
+        <div className={styles.child} />
+      
+        <b
+          ref={menu2Ref}
+          className={styles.menu2}
+          onMouseEnter={() => handleMouseEnter(menu2Ref)}
+          onClick={() => navigate('/calendar')}
+          style={{ cursor: 'pointer' }}
+        >
+          캘린더
+        </b>
+        <b
+          ref={menu3Ref}
+          className={styles.menu3}
+          onMouseEnter={() => handleMouseEnter(menu3Ref)}
+          onClick={() => navigate('/analysis')}
+          style={{ cursor: 'pointer' }}
+        >
+          분석
+        </b>
+
+        <b
+          ref={menu5Ref}
+          className={styles.menu5}
+          onMouseEnter={() => handleMouseEnter(menu5Ref)}
+        >
+          마이페이지
+        </b>
+
+        <div
+          className={styles.item}
+          style={{ left: `${indicatorLeft}px` }}
+        />
+
+        <div
+          className={styles.profileCircle}
+          onClick={() => onProfileClick && onProfileClick()}
+          role="button"
+          tabIndex={0}
+          onKeyDown={(e) => { if (e.key === 'Enter') onProfileClick && onProfileClick(); }}
+        />
+        <div
+          className={styles.profileIcon}
+          onClick={() => onProfileClick && onProfileClick()}
+          style={{ cursor: 'pointer' }}
+        >
+          <FaUser size={30} color="#222" />
+        </div>
+      </div>
+    </>
   );
 };
 
