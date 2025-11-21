@@ -1,7 +1,22 @@
+/* 전역 배경 - 최상위에 고정 */
+.globalBackground {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background: url('/public/background.png') repeat center top;
+  background-size: cover;
+  z-index: -1; /* 모든 콘텐츠 뒤로 */
+  pointer-events: none;
+}
+
+/* slideUpBg 제거 - 더 이상 필요 없음 */
+
 @keyframes slideUp {
   0% {
     opacity: 0;
-    transform: translateY(50px); /* 위로만 이동 */
+    transform: translateY(50px);
   }
   100% {
     opacity: 1;
@@ -20,13 +35,11 @@
   }
 }
 
-
-
 .container {
   width: 100%;
   min-height: 100vh;
   position: relative;
-  background-color: #F6F6EF;
+  background: transparent; /* 배경 제거 */
   overflow: hidden;
   text-align: left;
   font-size: 20px;
@@ -41,27 +54,29 @@
   position: relative;
   width: 1480px;
   height: 835px;
+  z-index: 1;
 }
 
 .backgroundIcon {
   position: absolute;
-  top: 50%;
+  top: 100px;
   left: 50%;
-  transform: translate(-50%, -50%);
+  transform: translate(-50%, 0);
   width: 1565px;
   height: 1064px;
   object-fit: cover;
+  z-index: 0;
 }
 
 .imageContainer {
   position: absolute;
-  top: 278px;
+  top: 150px;
   left: 50%;
   transform: translateX(-50%);
   width: 1328px;
   height: 557px;
+  z-index: 2;
 }
-
 
 .image1 {
   position: absolute;
@@ -71,6 +86,7 @@
   width: 170px;
   height: 260px;
   object-fit: cover;
+  animation: slideUp 1.2s ease-out forwards;
 }
 
 .image2 {
@@ -81,6 +97,7 @@
   width: 170px;
   height: 260px;
   object-fit: cover;
+  animation: slideUp 1.2s ease-out forwards;
 }
 
 .image3 {
@@ -91,6 +108,7 @@
   width: 170px;
   height: 260px;
   object-fit: cover;
+  animation: slideUp 1.2s ease-out forwards;
 }
 
 .image4 {
@@ -101,15 +119,12 @@
   width: 170px;
   height: 260px;
   object-fit: cover;
-}
-.image1, .image2, .image3, .image4 {
-  animation: slideUp 1.2s ease-out forwards; /* ← 추가 */
+  animation: slideUp 1.2s ease-out forwards;
 }
 
-/* mainText에 적용 */
 .mainText {
   position: absolute;
-  top: 333px;
+  top: 180px;
   left: 50%;
   transform: translateX(-50%);
   font-size: 96px;
@@ -118,28 +133,31 @@
   width: 900px;
   opacity: 0;
   animation: slideUpCenter 1.2s ease-out forwards;
+  z-index: 2;
 }
+
 .scrollContainer {
   width: 100%;
   height: 100vh;
   overflow-y: scroll;
-  /* scroll-snap-type: y mandatory;*/
+  position: relative;
+  z-index: 1;
 }
 
 .section {
   width: 100%;
   height: 100vh;
   scroll-snap-align: start;
+  position: relative;
 }
 
-/* 두 번째 섹션 이후 내용 */
 .nextContent {
   display: flex;
   flex-direction: column;
   justify-content: center;
   align-items: center;
   height: 100%;
-  background-color:  #F6F6EF;
+  background: transparent;
   text-align: center;
   color: #333;
   font-family: Pretendard;
@@ -149,13 +167,11 @@
   font-size: 60px;
   font-weight: 700;
   margin-bottom: 20px;
-  /*animation: slideUp 1.2s ease-out forwards;*/
 }
 
 .nextContent p {
   font-size: 24px;
   opacity: 0.8;
-  /*animation: slideUp 1.4s ease-out forwards;*/
 }
 
 .fadeSection {
