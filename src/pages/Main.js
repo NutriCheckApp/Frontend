@@ -28,7 +28,7 @@ const Main = () => {
                 <img className={styles.image4} src="/food2.png" alt="" />
               </div>
               <div className={styles.mainText}>
-                건강 목표를 향한, <br />
+                오직 당신의 반려견을 위한, <br />
                 스마트한 식단 솔루션
               </div>
             </div>
@@ -44,8 +44,8 @@ const Main = () => {
           viewport={{ once: true, amount: 0.3 }}
         >
           <div className={styles.nextContent}>
-            <h2>AI 맞춤 식단</h2>
-            <p>당신의 건강 데이터를 기반으로 매일의 식단을 설계합니다.</p>
+            <h2>맞춤 간식 레시피</h2>
+            <p>강아지의 건강 상태와 기호에 맞춘 수제 간식 레시피를 추천해드려요.</p>
           </div>
         </motion.section>
 
@@ -58,8 +58,8 @@ const Main = () => {
           viewport={{ once: true }}
         >
           <div className={styles.nextContent}>
-            <h2>건강 루틴 관리</h2>
-            <p>식단과 운동을 함께 추적하고 관리하세요.</p>
+            <h2>사진 일기</h2>
+            <p>우리 강아지의 특별한 순간을 사진으로 간단하게 기록해보세요.</p>
           </div>
         </motion.section>
       </div>

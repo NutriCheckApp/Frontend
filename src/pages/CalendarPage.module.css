@@ -1,3 +1,4 @@
+
 :root{
   --bg-start:#e9f1f0;
   --bg-end:#f5eafc;
@@ -6,7 +7,7 @@
   --accent:#ff6b6b;
 }
 
- .wrap{
+.wrap{
   min-height:100vh;
   background: linear-gradient(135deg,var(--bg-start),var(--bg-end));
   padding:0 24px 40px 24px;
@@ -36,17 +37,16 @@
 
 .headerWrapper{max-width:1100px;margin:0 auto 28px auto;position:relative;min-height:120px;z-index:1}
 
-.container{
+.container {
   max-width:1100px;
   margin:0 auto;
-  display:flex;
-  gap:28px;
-  align-items:flex-start;
+  display: flex;
+  gap: 28px;
+  align-items: stretch;
   position:relative;
   z-index:1;
   margin-top:0;
 }
-
 .leftCard,.rightCard{
   background:var(--card-bg);
   border-radius:12px;
@@ -59,80 +59,136 @@
 .rightCard{flex:1}
 
 /* Calendar specific */
-.calendarCard{display:flex;flex-direction:column;gap:12px}
-.calHeader{display:flex;align-items:center;justify-content:space-between}
-.monthTitle{font-weight:700;color:#333}
-.calNav button{background:transparent;border:none;font-size:20px;cursor:pointer}
-.weekdaysGrid{display:grid;grid-template-columns:repeat(7,1fr);color:var(--muted);font-size:13px}
-.weekday{text-align:center;padding:6px 0}
-.daysGrid{display:flex;flex-direction:column;gap:8px}
-.weekRow{display:grid;grid-template-columns:repeat(7,1fr);gap:8px}
-.dayCell{
-  min-height:70px;
-  border-radius:10px;
-  display:flex;
-  align-items:center; /* center vertically */
-  justify-content:center; /* center horizontally */
-  padding:8px;
-  cursor:pointer;
-  color:#333;
-  border:1px solid transparent;
-  box-sizing:border-box; /* ensure borders don't change layout */
+
+.calendarCard {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  margin-top: 20px;
 }
-.dayNumber{font-size:14px;margin:0}
-.today{background:#ff6b6b;color:#fff;display:flex;align-items:center;justify-content:center}
-.selected{
-  background:#ffdede;
-  /* use subtle glow instead of changing border to avoid layout shift */
+.calHeader {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+.monthTitle {
+  font-weight: 700;
+  color: #333;
+}
+.calNav button {
+  background: transparent;
+  border: none;
+  font-size: 20px;
+  cursor: pointer;
+}
+.weekdaysGrid {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  color: #8a8a8a;
+  font-size: 13px;
+}
+.weekday {
+  text-align: center;
+  padding: 6px 0;
+}
+.daysGrid {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+.weekRow {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  gap: 8px;
+}
+.dayCell {
+  min-height: 70px;
+  border-radius: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 8px;
+  cursor: pointer;
+  color: #333;
+  border: 1px solid transparent;
+  box-sizing: border-box;
+}
+.dayNumber {
+  font-size: 14px;
+  margin: 0;
+}
+.today {
+  background: #ff6b6b;
+  color: #fff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.selected {
+  background: #ffdede;
   box-shadow: 0 6px 18px rgba(255,107,107,0.08);
 }
 
-.rightHeader{display:flex;justify-content:space-between;align-items:center;margin-bottom:12px}
-.selectedDateDisplay{display:flex;align-items:center;gap:12px;font-weight:700}
-.dayNav{background:transparent;border:none;font-size:20px;cursor:pointer}
-.dateText{font-size:16px}
 
-/* Meals */
-.mealTabsBar{display:flex;gap:12px;margin-bottom:12px}
-.mealTabBtn{background:#f0f0f0;border:none;padding:8px 16px;border-radius:999px;cursor:pointer}
-.mealTabBtn.activeTab{background:#e9f1f0}
-.mealContent{min-height:220px}
-.mealCard{display:flex;flex-direction:column;gap:12px}
-.mealTabs{display:flex;gap:8px}
-.tab{background:#f3f3f3;padding:6px 10px;border-radius:999px}
-.mealList{display:flex;flex-direction:column;gap:12px}
-.mealItem{display:flex;align-items:center;gap:12px;padding:10px;border-radius:8px}
-.thumb{width:60px;height:60px;object-fit:cover;border-radius:8px}
-.mealInfo{flex:1}
-.mealName{font-weight:600}
-.mealKcal{color:var(--muted);font-size:13px}
-.writeBtn{background:transparent;border:none;color:var(--muted);cursor:pointer}
-.empty{color:var(--muted);text-align:center;padding:28px}
-
-.recommendBtn {
-  margin-top: 18px;
-  padding: 14px 32px;
-  background: linear-gradient(90deg, #1976d2 0%, #42a5f5 100%);
-  color: #fff;
+.rightHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 12px;
+}
+.selectedDateDisplay {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  font-weight: 700;
+}
+.dayNav {
+  background: transparent;
   border: none;
-  border-radius: 24px;
-  font-size: 18px;
-  font-weight: 600;
-  box-shadow: 0 4px 16px rgba(33, 150, 243, 0.12);
+  font-size: 20px;
   cursor: pointer;
-  transition: background 0.2s, transform 0.15s;
-  letter-spacing: 0.5px;
 }
-.recommendBtn:hover {
-  background: linear-gradient(90deg, #1565c0 0%, #64b5f6 100%);
-  transform: translateY(-2px) scale(1.04);
+.dateText {
+  font-size: 16px;
 }
-.recommendText {
-  font-size: 17px;
-  color: #1976d2;
-  font-weight: 500;
-  margin-bottom: 8px;
-  text-align: center;
+
+/* Dog Time */
+
+.timeTabsBar {
+  display: flex;
+  gap: 12px;
+  margin-bottom: 12px;
+}
+.timeTabBtn {
+  background: #f0f0f0;
+  border: none;
+  padding: 8px 16px;
+  border-radius: 999px;
+  cursor: pointer;
+}
+.timeTabBtn.activeTab {
+  background: #e9f1f0;
+}
+.timeContent {
+  min-height: 220px;
+}
+.dogCard {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  height: 100%;
+  justify-content: flex-start;
+  align-items: center;
+  padding-top: 40px;
+}
+.dogPhoto {
+  width: 280px;
+  height: 320px;
+  object-fit: cover;
+  border-radius: 16px;
+  box-shadow: 0 4px 16px rgba(0,0,0,0.08);
+  display: block;
+  margin: 0 auto;
 }
 
 @media(max-width:900px){
