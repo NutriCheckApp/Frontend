@@ -81,53 +81,23 @@ const Calendar = ({ onSelect, selectedDate }) => {
   );
 };
 
-const sampleMeals = {
-  morning: [
-    { name: '햄치즈 샌드위치', kcal: 90, img: '/food1.png' },
-  ],
-  lunch: [
-    { name: '된장찌개', kcal: 170, img: '/food2.png' },
-    { name: '공기밥', kcal: 300, img: '/food1.png' },
-    { name: '김치', kcal: 30, img: '/food2.png' },
-  ],
-  dinner: [],
+const dogImages = {
+  morning: '/food1.png',
+  lunch: '/food2.png',
+  dinner: '/food1.png',
 };
 
-const MealPanel = ({ selectedMeal, isFuture }) => {
-  if (isFuture) {
-    return (
-      <div className={styles.mealCard} style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', minHeight: 220 }}>
-        <div className={styles.recommendText}>식단을 추천받을 수 있습니다.</div>
-        <button className={styles.recommendBtn}>식단 추천받기</button>
-      </div>
-    );
-  }
-  const list = selectedMeal === 'morning' ? sampleMeals.morning : selectedMeal === 'lunch' ? sampleMeals.lunch : sampleMeals.dinner;
+const DogPanel = ({ selectedTime }) => {
   return (
-    <div className={styles.mealCard}>
-      <div className={styles.mealList}>
-        {list.length === 0 ? (
-          <div className={styles.empty}>작성하기</div>
-        ) : (
-          list.map((it, i) => (
-            <div key={i} className={styles.mealItem}>
-              <img src={it.img} alt="" className={styles.thumb} />
-              <div className={styles.mealInfo}>
-                <div className={styles.mealName}>{it.name}</div>
-                <div className={styles.mealKcal}>{it.kcal}kcal</div>
-              </div>
-              <button className={styles.writeBtn}>작성하기</button>
-            </div>
-          ))
-        )}
-      </div>
+    <div className={styles.dogCard} style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', minHeight: 220 }}>
+      <img src={dogImages[selectedTime]} alt={selectedTime} className={styles.dogPhoto} />
     </div>
   );
 };
 
 const CalendarPage = () => {
   const [selected, setSelected] = useState(new Date());
-  const [mealTab, setMealTab] = useState('lunch');
+  const [timeTab, setTimeTab] = useState('lunch');
 
   const goDay = (dir) => {
     setSelected((prev) => {
@@ -136,9 +106,6 @@ const CalendarPage = () => {
       return d;
     });
   };
-
-  const today = new Date();
-  const isFuture = selected > today.setHours(0,0,0,0);
 
   return (
     <div className={styles.wrap}>
@@ -160,13 +127,13 @@ const CalendarPage = () => {
             </div>
             <div />
           </div>
-          <div className={styles.mealTabsBar}>
-            <button className={`${styles.mealTabBtn} ${mealTab === 'morning' ? styles.activeTab : ''}`} onClick={() => setMealTab('morning')}>아침</button>
-            <button className={`${styles.mealTabBtn} ${mealTab === 'lunch' ? styles.activeTab : ''}`} onClick={() => setMealTab('lunch')}>점심</button>
-            <button className={`${styles.mealTabBtn} ${mealTab === 'dinner' ? styles.activeTab : ''}`} onClick={() => setMealTab('dinner')}>저녁</button>
+          <div className={styles.timeTabsBar}>
+            <button className={`${styles.timeTabBtn} ${timeTab === 'morning' ? styles.activeTab : ''}`} onClick={() => setTimeTab('morning')}>아침</button>
+            <button className={`${styles.timeTabBtn} ${timeTab === 'lunch' ? styles.activeTab : ''}`} onClick={() => setTimeTab('lunch')}>점심</button>
+            <button className={`${styles.timeTabBtn} ${timeTab === 'dinner' ? styles.activeTab : ''}`} onClick={() => setTimeTab('dinner')}>저녁</button>
           </div>
-          <div className={styles.mealContent}>
-            <MealPanel selectedMeal={mealTab} isFuture={isFuture} />
+          <div className={styles.timeContent}>
+            <DogPanel selectedTime={timeTab} />
           </div>
         </div>
       </div>

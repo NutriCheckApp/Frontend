@@ -29,7 +29,7 @@ const Header = ({ onProfileClick }) => {
     window.addEventListener('scroll', handleScroll);
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
-  // 초기 로드 시 캘린더(menu2) 중앙으로 설정
+  // 초기 로드 시 기록(menu2) 중앙으로 설정
   useEffect(() => {
     if (menu2Ref.current) {
       const menuRect = menu2Ref.current.getBoundingClientRect();
@@ -117,7 +117,7 @@ const Header = ({ onProfileClick }) => {
           onClick={() => navigate('/calendar')}
           style={{ cursor: 'pointer' }}
         >
-          캘린더
+          기록
         </b>
         <b
           ref={menu3Ref}
@@ -126,7 +126,7 @@ const Header = ({ onProfileClick }) => {
           onClick={() => navigate('/analysis')}
           style={{ cursor: 'pointer' }}
         >
-          분석
+          추천
         </b>
 
         <b
