@@ -82,9 +82,9 @@ const Calendar = ({ onSelect, selectedDate }) => {
 };
 
 const dogImages = {
-  morning: '/food1.png',
-  lunch: '/food2.png',
-  dinner: '/food1.png',
+  morning: '/dog1.jpg',
+  lunch: '/dog2.jpg',
+  dinner: '/dog3.jpg',
 };
 
 const DogPanel = ({ selectedTime }) => {

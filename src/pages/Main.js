@@ -22,10 +22,10 @@ const Main = () => {
             <div className={styles.contentWrapper}>
               <Header onProfileClick={() => setShowLogin(true)} />
               <div className={styles.imageContainer}>
-                <img className={styles.image1} src="/food1.png" alt="" />
-                <img className={styles.image2} src="/food2.png" alt="" />
-                <img className={styles.image3} src="/food1.png" alt="" />
-                <img className={styles.image4} src="/food2.png" alt="" />
+                <img className={styles.image1} src="/dog1.jpg" alt="" />
+                <img className={styles.image2} src="/dog2.jpg" alt="" />
+                <img className={styles.image3} src="/dog3.jpg" alt="" />
+                <img className={styles.image4} src="/dog4.jpg" alt="" />
               </div>
               <div className={styles.mainText}>
                 오직 당신의 반려견을 위한, <br />
