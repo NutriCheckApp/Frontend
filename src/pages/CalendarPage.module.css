@@ -191,6 +191,35 @@
   margin: 0 auto;
 }
 
+.placeholderImage {
+  width: 280px;
+  height: 320px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: 2px dashed #ddd;
+  border-radius: 16px;
+  color: #8a8a8a;
+  font-size: 16px;
+  background: #f9f9f9;
+}
+
+.uploadButton {
+  background: #ff6b6b;
+  color: white;
+  border: none;
+  padding: 10px 20px;
+  border-radius: 8px;
+  cursor: pointer;
+  font-size: 14px;
+  font-weight: 500;
+  transition: background 0.2s ease;
+}
+
+.uploadButton:hover {
+  background: #ff5252;
+}
+
 @media(max-width:900px){
   .container{flex-direction:column;padding:0 12px}
   .leftCard{width:100%}

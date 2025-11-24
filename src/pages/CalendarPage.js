@@ -81,16 +81,43 @@ const Calendar = ({ onSelect, selectedDate }) => {
   );
 };
 
-const dogImages = {
-  morning: '/dog1.jpg',
-  lunch: '/dog2.jpg',
-  dinner: '/dog3.jpg',
-};
+const DogPanel = ({ selectedTime, uploadedImages, onImageUpload, canUpload }) => {
+  const handleFileUpload = (event) => {
+    const file = event.target.files[0];
+    if (file) {
+      const reader = new FileReader();
+      reader.onload = (e) => {
+        onImageUpload(selectedTime, e.target.result);
+      };
+      reader.readAsDataURL(file);
+    }
+  };
 
-const DogPanel = ({ selectedTime }) => {
+  const currentImage = uploadedImages[selectedTime];
+
   return (
-    <div className={styles.dogCard} style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', minHeight: 220 }}>
-      <img src={dogImages[selectedTime]} alt={selectedTime} className={styles.dogPhoto} />
+    <div className={styles.dogCard} style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', minHeight: 220, gap: '15px' }}>
+      {currentImage ? (
+        <img src={currentImage} alt={selectedTime} className={styles.dogPhoto} />
+      ) : (
+        <div className={styles.placeholderImage}>
+          <span>사진을 업로드해주세요</span>
+        </div>
+      )}
+      {canUpload && (
+        <>
+          <input
+            type="file"
+            accept="image/*"
+            onChange={handleFileUpload}
+            style={{ display: 'none' }}
+            id={`file-upload-${selectedTime}`}
+          />
+          <label htmlFor={`file-upload-${selectedTime}`} className={styles.uploadButton}>
+            사진 선택
+          </label>
+        </>
+      )}
     </div>
   );
 };
@@ -98,6 +125,21 @@ const DogPanel = ({ selectedTime }) => {
 const CalendarPage = () => {
   const [selected, setSelected] = useState(new Date());
   const [timeTab, setTimeTab] = useState('lunch');
+  const [uploadedImages, setUploadedImages] = useState({
+    morning: null,
+    lunch: null,
+    dinner: null,
+  });
+
+  // 기본 강아지 사진들 (과거 날짜용)
+  const defaultDogImages = {
+    morning: '/dog1.jpg',
+    lunch: '/dog2.jpg',
+    dinner: '/dog3.jpg',
+  };
+
+  // 날짜별 이미지 데이터 저장
+  const [dailyImages, setDailyImages] = useState({});
 
   const goDay = (dir) => {
     setSelected((prev) => {
@@ -105,6 +147,48 @@ const CalendarPage = () => {
       d.setDate(d.getDate() + dir);
       return d;
     });
+  };
+
+  const handleImageUpload = (timeSlot, imageData) => {
+    const dateKey = selected.toDateString();
+    
+    setDailyImages(prev => ({
+      ...prev,
+      [dateKey]: {
+        ...prev[dateKey],
+        [timeSlot]: imageData
+      }
+    }));
+  };
+
+  // 현재 선택된 날짜의 이미지들 가져오기
+  const getCurrentDayImages = () => {
+    const dateKey = selected.toDateString();
+    const today = new Date();
+    const isToday = selected.toDateString() === today.toDateString();
+    const selectedDate = new Date(selected.getFullYear(), selected.getMonth(), selected.getDate());
+    const todayDate = new Date(today.getFullYear(), today.getMonth(), today.getDate());
+    const isFuture = selectedDate > todayDate;
+    
+    // 업로드된 이미지가 있으면 그걸 사용
+    if (dailyImages[dateKey]) {
+      return dailyImages[dateKey];
+    }
+    
+    // 오늘이거나 미래면 빈 상태, 과거 날짜면 기본 강아지 사진 표시
+    if (isToday || isFuture) {
+      return { morning: null, lunch: null, dinner: null };
+    } else {
+      return defaultDogImages;
+    }
+  };
+
+  // 오늘이거나 미래인지 확인 (업로드 가능한 날짜)
+  const canUpload = () => {
+    const today = new Date();
+    const selectedDate = new Date(selected.getFullYear(), selected.getMonth(), selected.getDate());
+    const todayDate = new Date(today.getFullYear(), today.getMonth(), today.getDate());
+    return selectedDate >= todayDate;
   };
 
   return (
@@ -133,7 +217,7 @@ const CalendarPage = () => {
             <button className={`${styles.timeTabBtn} ${timeTab === 'dinner' ? styles.activeTab : ''}`} onClick={() => setTimeTab('dinner')}>저녁</button>
           </div>
           <div className={styles.timeContent}>
-            <DogPanel selectedTime={timeTab} />
+            <DogPanel selectedTime={timeTab} uploadedImages={getCurrentDayImages()} onImageUpload={handleImageUpload} canUpload={canUpload()} />
           </div>
         </div>
       </div>
