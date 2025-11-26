@@ -1,9 +1,11 @@
 import React, { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import styles from './RegisterPage.module.css';
 
 const API_URL = 'http://localhost:8080/api/v1/auth/register';
 
 const RegisterPage = () => {
+  const navigate = useNavigate();
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
   const [email, setEmail] = useState('');
@@ -65,6 +67,11 @@ const RegisterPage = () => {
             setEmail('');
             setDogWeight('');
             setDogGender('M');
+
+            // 1초 후 메인 페이지로 이동
+            setTimeout(() => {
+                navigate('/');
+            }, 1000);
 
         } catch (err) {
             if (!error) { 
