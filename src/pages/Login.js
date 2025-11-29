@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import styles from './Login.module.css';
 
-const API_URL = 'http://localhost:8080/api/v1/login';
+const API_URL = 'http://localhost:8080/api/v1/auth/login';
 
 const Login = ({ onClose, onOpenRegister }) => {
   const [username, setUsername] = useState('');
