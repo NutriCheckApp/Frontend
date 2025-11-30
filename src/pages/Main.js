@@ -59,7 +59,7 @@ const Main = () => {
         >
           <div className={styles.nextContent}>
             <h2>사진 일기</h2>
-            <p>우리 강아지의 특별한 순간을 사진으로 간단하게 기록해보세요.</p>
+            <p>우리 강아지의 특별한 순간을 사진으로 기록해보세요.</p>
           </div>
         </motion.section>
       </div>

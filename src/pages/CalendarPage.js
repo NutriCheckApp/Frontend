@@ -1,6 +1,8 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import styles from './CalendarPage.module.css';
 import Header from '../components/Header';
+
+const API_BASE_URL = 'http://localhost:8080/api/v1';
 
 const weekdays = ['Mo', 'Tu', 'We', 'Th', 'Fr', 'Sa', 'Su'];
 
@@ -81,42 +83,90 @@ const Calendar = ({ onSelect, selectedDate }) => {
   );
 };
 
-const DogPanel = ({ selectedTime, uploadedImages, onImageUpload, canUpload }) => {
-  const handleFileUpload = (event) => {
+const DogPanel = ({ selectedDate, calendarData, onImageUpload, canUpload, isLoading }) => {
+  const [memo, setMemo] = useState('');
+  const [imageFile, setImageFile] = useState(null);
+
+  useEffect(() => {
+    if (calendarData) {
+      setMemo(calendarData.memo || '');
+    } else {
+      setMemo('');
+    }
+  }, [calendarData]);
+
+  const handleFileChange = (event) => {
     const file = event.target.files[0];
     if (file) {
-      const reader = new FileReader();
-      reader.onload = (e) => {
-        onImageUpload(selectedTime, e.target.result);
-      };
-      reader.readAsDataURL(file);
+      setImageFile(file);
     }
   };
 
-  const currentImage = uploadedImages[selectedTime];
+  const handleSave = async () => {
+    if (!imageFile && !memo) {
+      alert('사진 또는 메모를 입력해주세요.');
+      return;
+    }
+
+    let imageUrl = calendarData?.imageUrl || '';
+
+    if (imageFile) {
+      imageUrl = URL.createObjectURL(imageFile);
+    }
+
+    await onImageUpload(selectedDate, memo, imageUrl);
+    setImageFile(null);
+  };
+
+  const currentImage = calendarData?.imageUrl;
+
+  if (isLoading) {
+    return (
+      <div className={styles.dogCard} style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', minHeight: 220 }}>
+        <div>로딩 중...</div>
+      </div>
+    );
+  }
 
   return (
-    <div className={styles.dogCard} style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', minHeight: 220, gap: '15px' }}>
+    <div className={styles.dogCard} style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '15px', padding: '20px' }}>
       {currentImage ? (
-        <img src={currentImage} alt={selectedTime} className={styles.dogPhoto} />
+        <img src={currentImage} alt="uploaded" className={styles.dogPhoto} style={{ maxWidth: '100%', maxHeight: '200px', borderRadius: '8px' }} />
       ) : (
         <div className={styles.placeholderImage}>
           <span>사진을 업로드해주세요</span>
         </div>
       )}
+      
       {canUpload && (
         <>
           <input
             type="file"
             accept="image/*"
-            onChange={handleFileUpload}
+            onChange={handleFileChange}
             style={{ display: 'none' }}
-            id={`file-upload-${selectedTime}`}
+            id="file-upload"
           />
-          <label htmlFor={`file-upload-${selectedTime}`} className={styles.uploadButton}>
-            사진 선택
+          <label htmlFor="file-upload" className={styles.uploadButton}>
+            {imageFile ? imageFile.name : '사진 선택'}
           </label>
         </>
+      )}
+
+      <textarea
+        className={styles.memoInput}
+        placeholder="메모를 입력하세요..."
+        value={memo}
+        onChange={(e) => setMemo(e.target.value)}
+        readOnly={!canUpload}
+        rows={4}
+        style={{ width: '100%', padding: '10px', borderRadius: '8px', border: '1px solid #ddd', resize: 'none' }}
+      />
+
+      {canUpload && (
+        <button onClick={handleSave} className={styles.saveButton} style={{ padding: '10px 20px', borderRadius: '8px', backgroundColor: '#4CAF50', color: 'white', border: 'none', cursor: 'pointer' }}>
+          저장
+        </button>
       )}
     </div>
   );
@@ -124,22 +174,95 @@ const DogPanel = ({ selectedTime, uploadedImages, onImageUpload, canUpload }) =>
 
 const CalendarPage = () => {
   const [selected, setSelected] = useState(new Date());
-  const [timeTab, setTimeTab] = useState('lunch');
-  const [uploadedImages, setUploadedImages] = useState({
-    morning: null,
-    lunch: null,
-    dinner: null,
-  });
+  const [calendarData, setCalendarData] = useState(null);
+  const [isLoading, setIsLoading] = useState(false);
+  const [error, setError] = useState(null);
 
-  // 기본 강아지 사진들 (과거 날짜용)
-  const defaultDogImages = {
-    morning: '/dog1.jpg',
-    lunch: '/dog2.jpg',
-    dinner: '/dog3.jpg',
+  // 날짜가 변경될 때마다 해당 날짜의 데이터를 가져옴
+  useEffect(() => {
+    fetchCalendarData(selected);
+  }, [selected]);
+
+  // GET: 특정 날짜의 캘린더 데이터 가져오기
+  const fetchCalendarData = async (date) => {
+    setIsLoading(true);
+    setError(null);
+
+    const formattedDate = formatDate(date);
+    
+    try {
+      const token = localStorage.getItem('token');
+      const response = await fetch(`${API_BASE_URL}/calendar?date=${formattedDate}`, {
+        method: 'GET',
+        headers: {
+          'Content-Type': 'application/json',
+          ...(token && { 'Authorization': `Bearer ${token}` })
+        }
+      });
+
+      if (response.ok) {
+        const data = await response.json();
+        setCalendarData(data);
+      } else if (response.status === 404) {
+        // 데이터가 없는 경우
+        setCalendarData(null);
+      } else {
+        throw new Error(`서버 오류: ${response.status}`);
+      }
+    } catch (err) {
+      console.error('캘린더 데이터 로딩 실패:', err);
+      setError(err.message);
+      setCalendarData(null);
+    } finally {
+      setIsLoading(false);
+    }
   };
 
-  // 날짜별 이미지 데이터 저장
-  const [dailyImages, setDailyImages] = useState({});
+  // POST: 캘린더에 사진 및 메모 저장
+  const handleSaveCalendarData = async (date, memo, imageUrl) => {
+    setIsLoading(true);
+    setError(null);
+
+    const formattedDate = formatDate(date);
+
+    try {
+      const token = localStorage.getItem('token');
+      const response = await fetch(`${API_BASE_URL}/calendar`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          ...(token && { 'Authorization': `Bearer ${token}` })
+        },
+        body: JSON.stringify({
+          date: formattedDate,
+          memo: memo,
+          imageUrl: imageUrl
+        })
+      });
+
+      if (response.ok) {
+        const data = await response.json();
+        setCalendarData(data);
+        alert('저장되었습니다!');
+      } else {
+        throw new Error(`저장 실패: ${response.status}`);
+      }
+    } catch (err) {
+      console.error('캘린더 데이터 저장 실패:', err);
+      setError(err.message);
+      alert('저장에 실패했습니다.');
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  // 날짜를 YYYY-MM-DD 형식으로 변환
+  const formatDate = (date) => {
+    const year = date.getFullYear();
+    const month = String(date.getMonth() + 1).padStart(2, '0');
+    const day = String(date.getDate()).padStart(2, '0');
+    return `${year}-${month}-${day}`;
+  };
 
   const goDay = (dir) => {
     setSelected((prev) => {
@@ -147,40 +270,6 @@ const CalendarPage = () => {
       d.setDate(d.getDate() + dir);
       return d;
     });
-  };
-
-  const handleImageUpload = (timeSlot, imageData) => {
-    const dateKey = selected.toDateString();
-    
-    setDailyImages(prev => ({
-      ...prev,
-      [dateKey]: {
-        ...prev[dateKey],
-        [timeSlot]: imageData
-      }
-    }));
-  };
-
-  // 현재 선택된 날짜의 이미지들 가져오기
-  const getCurrentDayImages = () => {
-    const dateKey = selected.toDateString();
-    const today = new Date();
-    const isToday = selected.toDateString() === today.toDateString();
-    const selectedDate = new Date(selected.getFullYear(), selected.getMonth(), selected.getDate());
-    const todayDate = new Date(today.getFullYear(), today.getMonth(), today.getDate());
-    const isFuture = selectedDate > todayDate;
-    
-    // 업로드된 이미지가 있으면 그걸 사용
-    if (dailyImages[dateKey]) {
-      return dailyImages[dateKey];
-    }
-    
-    // 오늘이거나 미래면 빈 상태, 과거 날짜면 기본 강아지 사진 표시
-    if (isToday || isFuture) {
-      return { morning: null, lunch: null, dinner: null };
-    } else {
-      return defaultDogImages;
-    }
   };
 
   // 오늘이거나 미래인지 확인 (업로드 가능한 날짜)
@@ -211,13 +300,15 @@ const CalendarPage = () => {
             </div>
             <div />
           </div>
-          <div className={styles.timeTabsBar}>
-            <button className={`${styles.timeTabBtn} ${timeTab === 'morning' ? styles.activeTab : ''}`} onClick={() => setTimeTab('morning')}>아침</button>
-            <button className={`${styles.timeTabBtn} ${timeTab === 'lunch' ? styles.activeTab : ''}`} onClick={() => setTimeTab('lunch')}>점심</button>
-            <button className={`${styles.timeTabBtn} ${timeTab === 'dinner' ? styles.activeTab : ''}`} onClick={() => setTimeTab('dinner')}>저녁</button>
-          </div>
           <div className={styles.timeContent}>
-            <DogPanel selectedTime={timeTab} uploadedImages={getCurrentDayImages()} onImageUpload={handleImageUpload} canUpload={canUpload()} />
+            {error && <div className={styles.errorMessage}>⚠️ {error}</div>}
+            <DogPanel 
+              selectedDate={selected}
+              calendarData={calendarData}
+              onImageUpload={handleSaveCalendarData}
+              canUpload={canUpload()}
+              isLoading={isLoading}
+            />
           </div>
         </div>
       </div>

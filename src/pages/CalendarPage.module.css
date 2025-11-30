@@ -55,7 +55,7 @@
   position:relative;
   z-index:1;
 }
-.leftCard{width:420px}
+.leftCard{width:420px; height:500px;}
 .rightCard{flex:1}
 
 /* Calendar specific */
@@ -152,23 +152,6 @@
   font-size: 16px;
 }
 
-/* Dog Time */
-
-.timeTabsBar {
-  display: flex;
-  gap: 12px;
-  margin-bottom: 12px;
-}
-.timeTabBtn {
-  background: #f0f0f0;
-  border: none;
-  padding: 8px 16px;
-  border-radius: 999px;
-  cursor: pointer;
-}
-.timeTabBtn.activeTab {
-  background: #e9f1f0;
-}
 .timeContent {
   min-height: 220px;
 }
@@ -218,6 +201,48 @@
 
 .uploadButton:hover {
   background: #ff5252;
+}
+
+.memoInput {
+  width: 100%;
+  padding: 10px;
+  border-radius: 8px;
+  border: 1px solid #ddd;
+  resize: none;
+  font-family: inherit;
+  font-size: 14px;
+  transition: border-color 0.2s ease;
+}
+
+.memoInput:focus {
+  outline: none;
+  border-color: #ff6b6b;
+}
+
+.saveButton {
+  padding: 10px 20px;
+  border-radius: 8px;
+  background-color: #4CAF50;
+  color: white;
+  border: none;
+  cursor: pointer;
+  font-size: 14px;
+  font-weight: 500;
+  transition: background-color 0.2s ease;
+}
+
+.saveButton:hover {
+  background-color: #45a049;
+}
+
+.errorMessage {
+  padding: 12px;
+  background: #ffe6e6;
+  color: #d32f2f;
+  border-radius: 8px;
+  margin-bottom: 12px;
+  text-align: center;
+  font-size: 14px;
 }
 
 @media(max-width:900px){

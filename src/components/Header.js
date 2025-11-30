@@ -133,6 +133,8 @@ const Header = ({ onProfileClick }) => {
           ref={menu5Ref}
           className={styles.menu5}
           onMouseEnter={() => handleMouseEnter(menu5Ref)}
+          onClick={() => navigate('/mypage')}
+          style={{ cursor: 'pointer' }}
         >
           마이페이지
         </b>
