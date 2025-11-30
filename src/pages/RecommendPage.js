@@ -1,19 +1,41 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import styles from './RecommendPage.module.css';
 import Header from '../components/Header';
 
-const dogRecipes = [
-  { id: 1, title: '닭가슴살 쿠키', image: '/recipe1.jpg' },
-  { id: 2, title: '고구마 간식', image: '/food2.png' },
-  { id: 3, title: '연어 트릿', image: '/food1.png' },
-  { id: 4, title: '당근 케이크', image: '/food2.png' },
-  { id: 5, title: '바나나 쿠키', image: '/food1.png' },
-  { id: 6, title: '치킨 저키', image: '/food2.png' },
-];
+const API_BASE_URL = 'http://localhost:8080/api/v1';
 
 const RecommendPage = () => {
   const navigate = useNavigate();
+  const [recipes, setRecipes] = useState([]);
+  const [isLoading, setIsLoading] = useState(true);
+
+  useEffect(() => {
+    fetchRecipes();
+  }, []);
+
+  const fetchRecipes = async () => {
+    setIsLoading(true);
+    try {
+      const jwt = localStorage.getItem('jwt');
+      const response = await fetch(`${API_BASE_URL}/recipes`, {
+        method: 'GET',
+        headers: {
+          'Content-Type': 'application/json',
+          ...(jwt && { 'Authorization': `Bearer ${jwt}` })
+        }
+      });
+
+      if (response.ok) {
+        const data = await response.json();
+        setRecipes(data);
+      }
+    } catch (err) {
+      console.error('레시피 목록 로딩 실패:', err);
+    } finally {
+      setIsLoading(false);
+    }
+  };
 
   const handleRecipeClick = (recipeId) => {
     navigate(`/recipe/${recipeId}`);
@@ -29,18 +51,22 @@ const RecommendPage = () => {
           <p className={styles.subtitle}>우리 강아지를 위한 건강한 수제 간식을 만들어보세요</p>
         </div>
 
-        <div className={styles.recipeGrid}>
-          {dogRecipes.map((recipe) => (
-            <div 
-              className={styles.recipeCard} 
-              key={recipe.id}
-              onClick={() => handleRecipeClick(recipe.id)}
-            >
-              <img src={recipe.image} alt={recipe.title} className={styles.recipeImage} />
-              <h3 className={styles.recipeTitle}>{recipe.title}</h3>
-            </div>
-          ))}
-        </div>
+        {isLoading ? (
+          <div className={styles.loading}>로딩 중...</div>
+        ) : (
+          <div className={styles.recipeGrid}>
+            {recipes.map((recipe) => (
+              <div 
+                className={styles.recipeCard} 
+                key={recipe.recipe_id}
+                onClick={() => handleRecipeClick(recipe.recipe_id)}
+              >
+                <img src={recipe.imageUrl} alt={recipe.recipe_name} className={styles.recipeImage} />
+                <h3 className={styles.recipeTitle}>{recipe.recipe_name}</h3>
+              </div>
+            ))}
+          </div>
+        )}
       </div>
     </div>
   );

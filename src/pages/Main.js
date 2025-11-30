@@ -44,8 +44,8 @@ const Main = () => {
           viewport={{ once: true, amount: 0.3 }}
         >
           <div className={styles.nextContent}>
-            <h2>맞춤 간식 레시피</h2>
-            <p>강아지의 건강 상태와 기호에 맞춘 수제 간식 레시피를 추천해드려요.</p>
+            <h2>기록하기</h2>
+            <p>우리 강아지의 특별한 순간을 사진으로 기록해보세요.</p>
           </div>
         </motion.section>
 
@@ -58,8 +58,8 @@ const Main = () => {
           viewport={{ once: true }}
         >
           <div className={styles.nextContent}>
-            <h2>사진 일기</h2>
-            <p>우리 강아지의 특별한 순간을 사진으로 기록해보세요.</p>
+            <h2>맞춤 간식 레시피</h2>
+            <p>강아지의 건강 상태와 기호에 맞춘 수제 간식 레시피를 추천해드려요.</p>
           </div>
         </motion.section>
       </div>

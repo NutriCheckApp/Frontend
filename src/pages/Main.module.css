@@ -7,11 +7,9 @@
   height: 100vh;
   background: url('/public/background.png') repeat center top;
   background-size: cover;
-  z-index: -1; /* 모든 콘텐츠 뒤로 */
+  z-index: -1;
   pointer-events: none;
 }
-
-/* slideUpBg 제거 - 더 이상 필요 없음 */
 
 @keyframes slideUp {
   0% {
@@ -59,7 +57,7 @@
   width: 100%;
   min-height: 100vh;
   position: relative;
-  background: transparent; /* 배경 제거 */
+  background: transparent;
   overflow: hidden;
   text-align: left;
   font-size: 20px;
@@ -210,15 +208,4 @@
   transform: translateY(30px);
   animation: fadeInUp 0.8s ease-out forwards;
   animation-delay: 0.9s;
-}
-
-.fadeSection {
-  opacity: 0;
-  transform: translateY(60px);
-  transition: opacity 1.2s ease, transform 1.2s ease;
-}
-
-.visible {
-  opacity: 1;
-  transform: translateY(0);
 }
