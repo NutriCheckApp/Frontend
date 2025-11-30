@@ -22,15 +22,11 @@ const MyPage = () => {
     try {
       const jwt = localStorage.getItem('jwt');
       
-      console.log('🔑 JWT Token:', jwt ? 'exists' : 'none');
-      
       if (!jwt) {
         setError('로그인이 필요합니다.');
         setTimeout(() => navigate('/'), 2000);
         return;
       }
-
-      console.log(`📡 API 호출: ${API_BASE_URL}`);
 
       const response = await fetch(API_BASE_URL, {
         method: 'GET',
@@ -39,8 +35,6 @@ const MyPage = () => {
           'Authorization': `Bearer ${jwt}`
         }
       });
-
-      console.log('📡 응답 상태:', response.status);
 
       if (!response.ok) {
         if (response.status === 401) {
@@ -62,18 +56,16 @@ const MyPage = () => {
       }
 
       const data = await response.json();
-      console.log('✅ User data:', data);
       
-      // 강아지 정보가 배열로 오는 경우 0번째 강아지 사용
-      if (data.pets && Array.isArray(data.pets) && data.pets.length > 0) {
-        const pet = data.pets[0];
+      if (data.pet_list && Array.isArray(data.pet_list) && data.pet_list.length > 0) {
+        const pet = data.pet_list[0];
         setUserInfo({
           username: data.username,
           email: data.email,
           pet_weight: pet.pet_weight,
-          Gender: pet.Gender,
+          Gender: pet.pet_gender,
           pet_age: pet.pet_age,
-          activityLevel: pet.activityLevel
+          activityLevel: pet.activity_level
         });
       } else {
         setUserInfo(data);
