@@ -60,8 +60,8 @@ const RegisterPage = () => {
             password: password,
             pet_weight: parseFloat(petWeight),  
             Gender: petGender,  
-            petAge: parseInt(petAge, 10),
-            activityLevel: activityLevel,
+            pet_age: parseInt(petAge, 10),
+            activity_level: activityLevel,
     };
 
       try {
