@@ -3,7 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import styles from './MyPage.module.css';
 import Header from '../components/Header';
 
-const API_BASE_URL = 'http://localhost:8080/api/v1/auth';
+const API_BASE_URL = 'http://localhost:8080/api/v1/profile';
 
 const MyPage = () => {
   const navigate = useNavigate();
@@ -30,8 +30,9 @@ const MyPage = () => {
         return;
       }
 
-      // JWT 토큰으로 사용자 정보 조회
-      const response = await fetch(`${API_BASE_URL}`, {
+      console.log(`📡 API 호출: ${API_BASE_URL}`);
+
+      const response = await fetch(API_BASE_URL, {
         method: 'GET',
         headers: {
           'Content-Type': 'application/json',
@@ -39,24 +40,39 @@ const MyPage = () => {
         }
       });
 
-      console.log('📡 Response status:', response.status);
+      console.log('📡 응답 상태:', response.status);
 
-      if (response.ok) {
-        const data = await response.json();
-        console.log('✅ User data:', data);
-        setUserInfo(data);
-      } else if (response.status === 401) {
-        setError('로그인이 만료되었습니다.');
-        localStorage.removeItem('jwt');
-        setTimeout(() => navigate('/'), 2000);
-      } else {
-        const errorText = await response.text();
-        console.error('❌ Error response:', errorText);
-        throw new Error(`서버 오류: ${response.status} - ${errorText}`);
+      if (!response.ok) {
+        if (response.status === 401) {
+          setError('로그인이 만료되었습니다.');
+          localStorage.removeItem('jwt');
+          setTimeout(() => navigate('/'), 2000);
+        } else if (response.status === 404) {
+          setError('사용자 정보를 찾을 수 없습니다.');
+        } else if (response.status === 500) {
+          const errorText = await response.text();
+          console.error('❌ 서버 오류:', errorText);
+          setError('🚫 서버 내부 오류가 발생했습니다.');
+        } else {
+          const errorText = await response.text();
+          console.error('❌ Error response:', errorText);
+          setError(`서버 오류: ${response.status}`);
+        }
+        return;
       }
+
+      const data = await response.json();
+      console.log('✅ User data:', data);
+      setUserInfo(data);
+
     } catch (err) {
       console.error('❌ 사용자 정보 로딩 실패:', err);
-      setError(err.message);
+      
+      if (err.name === 'TypeError' && err.message.includes('Failed to fetch')) {
+        setError('🔌 서버에 연결할 수 없습니다. Spring Boot 서버가 실행 중인지 확인해주세요.');
+      } else {
+        setError(`오류가 발생했습니다: ${err.message}`);
+      }
     } finally {
       setIsLoading(false);
     }
