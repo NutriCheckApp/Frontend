@@ -63,7 +63,21 @@ const MyPage = () => {
 
       const data = await response.json();
       console.log('✅ User data:', data);
-      setUserInfo(data);
+      
+      // 강아지 정보가 배열로 오는 경우 0번째 강아지 사용
+      if (data.pets && Array.isArray(data.pets) && data.pets.length > 0) {
+        const pet = data.pets[0];
+        setUserInfo({
+          username: data.username,
+          email: data.email,
+          pet_weight: pet.pet_weight,
+          Gender: pet.Gender,
+          pet_age: pet.pet_age,
+          activityLevel: pet.activityLevel
+        });
+      } else {
+        setUserInfo(data);
+      }
 
     } catch (err) {
       console.error('❌ 사용자 정보 로딩 실패:', err);
@@ -155,7 +169,7 @@ const MyPage = () => {
                   <div className={styles.infoItem}>
                     <span className={styles.label}>나이</span>
                     <span className={styles.value}>
-                      {userInfo.petAge}개월 ({Math.floor(userInfo.petAge / 12)}년 {userInfo.petAge % 12}개월)
+                      {userInfo.pet_age}개월 ({Math.floor(userInfo.pet_age / 12)}년 {userInfo.pet_age % 12}개월)
                     </span>
                   </div>
                   <div className={styles.infoItem}>
