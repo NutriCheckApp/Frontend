@@ -28,7 +28,26 @@ const RecommendPage = () => {
 
       if (response.ok) {
         const data = await response.json();
-        setRecipes(data);
+        // 레시피 이름에 따른 이미지 매칭
+        const imageMap = {
+          '안티에이징스무디': '/antiaging.png',
+          '사라다': '/saladbun.png',
+          '치즈핫도그': '/cheesehotdog.png',
+          '부침개': '/buchimgae.png',
+          '배잡채': '/pearjapche.png',
+          '참치 볶음밥': '/tunarice.png',
+          '참치 샐러드': '/tunasalad.png',
+          '햄버그스테이크': '/hambak.png',
+          '마가레뜨': '/magarette.png',
+          '당근케이크': '/carrotcake.png',
+          '쿠키': '/cookie.png',
+          '단호박빵': '/danhobak.png',
+        };
+        const recipesWithLocalImages = data.map(recipe => ({
+          ...recipe,
+          imageUrl: imageMap[recipe.recipe_name] || '/recipe1.jpg'
+        }));
+        setRecipes(recipesWithLocalImages);
       }
     } catch (err) {
       console.error('레시피 목록 로딩 실패:', err);
