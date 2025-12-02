@@ -4,6 +4,7 @@ import styles from './RecommendPage.module.css';
 import Header from '../components/Header';
 
 const API_BASE_URL = 'http://localhost:8080/api/v1';
+const IMAGE_BASE_URL = `${API_BASE_URL}/recipes/image`;
 
 const RecommendPage = () => {
   const navigate = useNavigate();
@@ -28,7 +29,11 @@ const RecommendPage = () => {
 
       if (response.ok) {
         const data = await response.json();
-        setRecipes(data);
+        const recipesWithImageUrls = data.map(recipe => ({
+          ...recipe,
+          imageUrl: `${IMAGE_BASE_URL}/${recipe.image_name}`
+        }));
+        setRecipes(recipesWithImageUrls);
       }
     } catch (err) {
       console.error('레시피 목록 로딩 실패:', err);
@@ -61,7 +66,11 @@ const RecommendPage = () => {
                 key={recipe.recipe_id}
                 onClick={() => handleRecipeClick(recipe.recipe_id)}
               >
-                <img src={recipe.imageUrl} alt={recipe.recipe_name} className={styles.recipeImage} />
+                <img 
+                  src={recipe.imageUrl} 
+                  alt={recipe.recipe_name} 
+                  className={styles.recipeImage} 
+                />
                 <h3 className={styles.recipeTitle}>{recipe.recipe_name}</h3>
               </div>
             ))}
