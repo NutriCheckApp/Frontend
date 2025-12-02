@@ -101,10 +101,15 @@ const MyPage = () => {
 
   const getGenderLabel = (gender) => {
     switch (gender) {
-      case 'M': return '수컷';
-      case 'F': return '암컷';
-      case 'NM': return '중성화 수컷';
-      case 'NF': return '중성화 암컷';
+      case 'M':
+      case 'MALE': return '수컷';
+      case 'F':
+      case 'FEMALE': return '암컷';
+      case 'NM':
+      case 'NEUTERED_MALE': return '중성화 수컷';
+      case 'NF':
+      case 'SF':
+      case 'SPAYED_FEMALE': return '중성화 암컷';
       default: return gender;
     }
   };
