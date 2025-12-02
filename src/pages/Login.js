@@ -8,7 +8,6 @@ const Login = ({ onClose, onOpenRegister }) => {
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
   const [isLoading, setIsLoading] = useState(false);
-  const [successMessage, setSuccessMessage] = useState('');
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -20,7 +19,6 @@ const Login = ({ onClose, onOpenRegister }) => {
 
     setIsLoading(true);
     setError('');
-    setSuccessMessage('');
 
     const loginData = {
       username: username,
@@ -88,16 +86,12 @@ const Login = ({ onClose, onOpenRegister }) => {
         console.log('💾 사용자명 저장 완료:', data.username);
       }
 
-      // 성공 메시지 표시
-      const message = data.message || '로그인 성공';
-      setSuccessMessage(`✅ ${message}`);
-
-      // 성공 메시지를 잠시 보여준 후 모달 닫기
-      setTimeout(() => {
-        if (onClose) onClose();
-        // 페이지 새로고침으로 로그인 상태 반영
-        window.location.reload();
-      }, 1500);
+      // 팝업으로 로그인 성공 알림
+      alert('로그인 성공!');
+      
+      if (onClose) onClose();
+      // 페이지 새로고침으로 로그인 상태 반영
+      window.location.reload();
 
     } catch (err) {
       console.error('❌ 로그인 오류:', err);
@@ -146,7 +140,6 @@ const Login = ({ onClose, onOpenRegister }) => {
             />
           </label>
           {error && <div className={styles.error}>{error}</div>}
-          {successMessage && <div className={styles.success}>{successMessage}</div>}
           <button className={styles.submit} type="submit" disabled={isLoading}>
             {isLoading ? '로그인 중...' : '로그인'}
           </button>
