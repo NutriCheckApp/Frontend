@@ -15,6 +15,15 @@ const Header = ({ onProfileClick }) => {
   const [hideHeader, setHideHeader] = useState(false);
   const lastScrollY = useRef(0);
 
+  const handleProfileClick = () => {
+    const jwt = localStorage.getItem('jwt');
+    if (jwt) {
+      navigate('/mypage');
+    } else {
+      onProfileClick && onProfileClick();
+    }
+  };
+
   // 스크롤 시 헤더 숨김 처리
   useEffect(() => {
     const handleScroll = () => {
@@ -97,7 +106,16 @@ const Header = ({ onProfileClick }) => {
 
   return (
     <>
-      <div style={{position: 'fixed', top: 10, left: 180, zIndex: 1200}}>
+      <div 
+        style={{
+          position: 'fixed', 
+          top: 10, 
+          left: 180, 
+          zIndex: 1200,
+          transform: hideHeader ? 'translateY(-100px)' : 'translateY(0)',
+          transition: 'transform 0.35s cubic-bezier(0.4,0,0.2,1)',
+        }}
+      >
         <NutriCheckLogo type="compact" />
       </div>
       <div
@@ -133,6 +151,8 @@ const Header = ({ onProfileClick }) => {
           ref={menu5Ref}
           className={styles.menu5}
           onMouseEnter={() => handleMouseEnter(menu5Ref)}
+          onClick={() => navigate('/mypage')}
+          style={{ cursor: 'pointer' }}
         >
           마이페이지
         </b>
@@ -144,14 +164,14 @@ const Header = ({ onProfileClick }) => {
 
         <div
           className={styles.profileCircle}
-          onClick={() => onProfileClick && onProfileClick()}
+          onClick={handleProfileClick}
           role="button"
           tabIndex={0}
-          onKeyDown={(e) => { if (e.key === 'Enter') onProfileClick && onProfileClick(); }}
+          onKeyDown={(e) => { if (e.key === 'Enter') handleProfileClick(); }}
         />
         <div
           className={styles.profileIcon}
-          onClick={() => onProfileClick && onProfileClick()}
+          onClick={handleProfileClick}
           style={{ cursor: 'pointer' }}
         >
           <FaUser size={30} color="#222" />
