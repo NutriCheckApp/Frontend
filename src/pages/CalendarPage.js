@@ -3,8 +3,8 @@ import styles from './CalendarPage.module.css';
 import Header from '../components/Header';
 
 const API_BASE_URL = 'http://localhost:8080/api/v1/calendar';
-// Базовый URL для получения самого файла изображения
 const IMAGE_BASE_URL = 'http://localhost:8080/api/v1/calendar/image/';
+const MEMO_API_URL = 'http://localhost:8080/api/v1/calendar/memo';  
 const weekdays = ['Mo', 'Tu', 'We', 'Th', 'Fr', 'Sa', 'Su'];
 
 function getMonthMatrix(year, month) {
@@ -90,10 +90,8 @@ const DogPanel = ({ selectedDate, calendarData, onSave, canUpload, isLoading }) 
   const [imagePreviewUrl, setImagePreviewUrl] = useState(null); 
 
   useEffect(() => {
-    // Сохраняем предыдущий URL из calendarData для очистки
     const prevImageUrl = calendarData?.imageUrl; 
 
-    // Логика сброса состояния
     if (calendarData) {
       setMemo(calendarData.memo || '');
       setImageFile(null);
@@ -106,23 +104,19 @@ const DogPanel = ({ selectedDate, calendarData, onSave, canUpload, isLoading }) 
       setImagePreviewUrl(null); 
     }
     
-    // Очистка предыдущего Object URL, если он был
     if (prevImageUrl && prevImageUrl.startsWith('blob:')) {
         URL.revokeObjectURL(prevImageUrl);
     }
     
-    // Очистка локального URL, созданного для предпросмотра, при размонтировании
     return () => {
       if (imagePreviewUrl) URL.revokeObjectURL(imagePreviewUrl);
     };
-    // Добавляем calendarData в зависимости для отслеживания смены данных
   }, [calendarData]);
 
   const handleFileChange = (event) => {
     const file = event.target.files[0];
     if (file) {
       setImageFile(file);
-      // Создание URL для предварительного просмотра
       if (imagePreviewUrl) URL.revokeObjectURL(imagePreviewUrl);
       setImagePreviewUrl(URL.createObjectURL(file));
     }
@@ -134,9 +128,9 @@ const DogPanel = ({ selectedDate, calendarData, onSave, canUpload, isLoading }) 
       return;
     }
 
-    await onSave(selectedDate, memo, imageFile);
+    await onSave(selectedDate, memo, imageFile, calendarData);
     setImageFile(null);
-    setImagePreviewUrl(null); // Сброс превью после сохранения
+    setImagePreviewUrl(null); 
     setIsEditing(false);
   };
 
@@ -146,14 +140,14 @@ const DogPanel = ({ selectedDate, calendarData, onSave, canUpload, isLoading }) 
 
   const handleCancel = () => {
     setMemo(calendarData?.memo || '');
-    // Очистка выбранного файла и превью
+
     setImageFile(null);
     if (imagePreviewUrl) URL.revokeObjectURL(imagePreviewUrl);
     setImagePreviewUrl(null);
     setIsEditing(false);
   };
 
-  // Приоритет: 1. Предварительный просмотр 2. Сохраненное изображение (imageUrl)
+
   const currentImage = imagePreviewUrl || calendarData?.imageUrl;
   const hasData = calendarData?.imageUrl || calendarData?.memo;
 
@@ -233,7 +227,6 @@ const CalendarPage = () => {
     fetchCalendarData(selected);
   }, [selected]);
 
-  // ДОБАВЛЕНО: Функция для загрузки изображения с JWT
   const fetchImageWithAuth = async (imageFileName) => {
     if (!imageFileName) return null;
 
@@ -242,7 +235,6 @@ const CalendarPage = () => {
 
     if (!jwt) {
       console.warn('JWT not found. Skipping image fetch.');
-      // Если токена нет, возвращаем прямой URL. Это может сработать, если защита отключена.
       return url; 
     }
 
@@ -250,14 +242,12 @@ const CalendarPage = () => {
       const response = await fetch(url, {
         method: 'GET',
         headers: {
-          // Добавление заголовка авторизации
           'Authorization': `Bearer ${jwt}`, 
         },
       });
 
       if (response.ok) {
         const blob = await response.blob();
-        // Создание локального URL для отображения в <img>
         return URL.createObjectURL(blob);
       } else {
         console.error(`Failed to fetch protected image: ${response.status}`);
@@ -274,7 +264,6 @@ const CalendarPage = () => {
     const formattedDate = formatDate(date);
     
     try {
-      // 1. Получаем метаданные календаря (включая image_name)
       const jwt = localStorage.getItem('jwt');
       const metaResponse = await fetch(`${API_BASE_URL}?date=${formattedDate}`, {
         method: 'GET',
@@ -290,12 +279,10 @@ const CalendarPage = () => {
         
         let imageUrl = null;
         if (imageName) {
-          // 2. Используем fetchImageWithAuth для получения отображаемого URL
           const localUrl = await fetchImageWithAuth(imageName);
           imageUrl = localUrl;
         }
 
-        // 3. Обновляем состояние с локальным URL (или null)
         const processedData = {
           ...data,
           imageUrl: imageUrl, 
@@ -313,58 +300,74 @@ const CalendarPage = () => {
     }
   };
 
-  // Эта функция остается, но не используется для отображения (скачивание отключено)
-  const downloadImageFromFileName = async (imageFileName) => {
-    const url = `${IMAGE_BASE_URL}${imageFileName}`;  
-    if (!url) return;
-    
-    // ... (старый код скачивания)
-  };
-
-  const handleSaveCalendarData = async (date, memo, imageFile) => {
+  const handleSaveCalendarData = async (date, memo, imageFile, currentCalendarData) => {
     setIsLoading(true);
     const formattedDate = formatDate(date);
-
+    const jwt = localStorage.getItem('jwt');
+    
     try {
-      const jwt = localStorage.getItem('jwt');
-      const formData = new FormData();
-      formData.append('date', formattedDate);
-      formData.append('memo', memo);
-      
-      if (imageFile) {
-        formData.append('file', imageFile);
+      let response;
+      let data;
+
+      if (!imageFile && currentCalendarData?.memo !== memo) {
+        // Only memo update
+        response = await fetch(MEMO_API_URL, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            ...(jwt && { 'Authorization': `Bearer ${jwt}` })
+          },
+          body: JSON.stringify({ date: formattedDate, memo: memo })
+        });
+        
+        if (response.ok) {
+            data = await response.json();
+        }
+
+      } else {
+        // Image or Image+Memo update
+        const formData = new FormData();
+        formData.append('date', formattedDate);
+        formData.append('memo', memo);
+        
+        if (imageFile) {
+          formData.append('file', imageFile);
+        }
+
+        response = await fetch(`${API_BASE_URL}`, {
+          method: 'POST',
+          headers: {
+            ...(jwt && { 'Authorization': `Bearer ${jwt}` })
+          },
+          body: formData
+        });
+        
+        if (response.ok) {
+            data = await response.json();
+        }
       }
 
-      const response = await fetch(`${API_BASE_URL}`, {
-        method: 'POST',
-        headers: {
-          // УДАЛЕНО: 'Content-Type' не нужен для FormData
-          ...(jwt && { 'Authorization': `Bearer ${jwt}` })
-        },
-        body: formData
-      });
-
       if (response.ok) {
-        const data = await response.json();
         alert('저장되었습니다!');
         
         const imageName = data.image_name;
-        let imageUrl = null;
-        
+        let imageUrl = currentCalendarData?.imageUrl; // Preserve existing URL unless new image is uploaded
+
         if (imageName) {
-            // Используем fetchImageWithAuth для получения отображаемого URL после сохранения
             const localUrl = await fetchImageWithAuth(imageName);
             imageUrl = localUrl;
+        } else if (!imageName && imageFile) {
+            imageUrl = null; 
+        } else if (!imageName && currentCalendarData?.imageUrl && !imageFile) {
+            // Case where we only updated memo, keep original image URL
+            imageUrl = currentCalendarData.imageUrl;
         }
-
-        // Обновление состояния с локальным URL
+        
         const processedData = {
             ...data,
             imageUrl: imageUrl,
         };
         setCalendarData(processedData);
-
-        // УДАЛЕНО: Убрали принудительный вызов скачивания.
       } else {
         alert('저장에 실패했습니다.');
       }
