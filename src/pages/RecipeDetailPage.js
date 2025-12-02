@@ -4,6 +4,7 @@ import styles from './RecipeDetailPage.module.css';
 import Header from '../components/Header';
 
 const API_BASE_URL = 'http://localhost:8080/api/v1';
+const IMAGE_BASE_URL = `${API_BASE_URL}/images`;
 
 const RecipeDetailPage = () => {
   const { id } = useParams();
@@ -30,22 +31,15 @@ const RecipeDetailPage = () => {
 
       if (response.ok) {
         const data = await response.json();
-        // 레시피 이름에 따른 이미지 매칭
-        const imageMap = {
-          '안티에이징스무디': '/antiaging.png',
-          '사라다': '/saladbun.png',
-          '치즈핫도그': '/cheesehotdog.png',
-          '부침개': '/buchimgae.png',
-          '배잡채': '/pearjapche.png',
-          '참치 볶음밥': '/tunarice.png',
-          '참치 샐러드': '/tunasalad.png',
-          '햄버그스테이크': '/hambak.png',
-          '마가레뜨': '/magarette.png',
-          '당근케이크': '/carrotcake.png',
-          '쿠키': '/cookie.png',
-          '단호박빵': '/danhobak.png',
-        };
-        data.imageUrl = imageMap[data.recipe_name] || '/recipe1.jpg';
+        
+        if (data && data.image_name) {
+          data.imageUrl = `${IMAGE_BASE_URL}/${data.image_name}`;
+          console.log('Generated Image URL:', data.imageUrl);
+        } else {
+          console.warn('Recipe data is missing image_name.');
+          data.imageUrl = ''; 
+        }
+        
         setRecipe(data);
       }
     } catch (err) {
@@ -92,7 +86,16 @@ const RecipeDetailPage = () => {
         
         <div className={styles.recipeContainer}>
           <div className={styles.recipeHeader}>
-            <img src={recipe.imageUrl} alt={recipe.recipe_name} className={styles.recipeImage} />
+            <img 
+              src={recipe.imageUrl} 
+              alt={recipe.recipe_name} 
+              className={styles.recipeImage} 
+              onError={(e) => {
+                  console.error('Image failed to load for recipe:', recipe.recipe_name);
+                  console.error('Attempted URL:', recipe.imageUrl);
+                  e.target.style.display = 'none'; 
+              }}
+            />
             <div className={styles.recipeInfo}>
               <h1 className={styles.recipeTitle}>{recipe.recipe_name}</h1>
               <p className={styles.recipeDescription}>{recipe.description}</p>

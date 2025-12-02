@@ -56,7 +56,7 @@ const Header = ({ onProfileClick }) => {
     try {
       const path = location && location.pathname ? location.pathname : '';
       if (path.startsWith('/calendar')) activeRef = menu2Ref;
-      else if (path.startsWith('/analysis')) activeRef = menu3Ref;
+      else if (path.startsWith('/analysis') || path.startsWith('/recipe/')) activeRef = menu3Ref;
       else if (path.startsWith('/mypage')) activeRef = menu5Ref;
       else activeRef = menu4Ref;
     } catch (e) {
@@ -96,7 +96,7 @@ const Header = ({ onProfileClick }) => {
     try {
       const path = location && location.pathname ? location.pathname : '';
       if (path.startsWith('/calendar')) return menu2Ref;
-      if (path.startsWith('/analysis')) return menu3Ref;
+      if (path.startsWith('/analysis') || path.startsWith('/recipe/')) return menu3Ref;
       if (path.startsWith('/mypage')) return menu5Ref;
     } catch (e) {
       // fall through
