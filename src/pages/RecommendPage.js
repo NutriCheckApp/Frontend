@@ -4,7 +4,7 @@ import styles from './RecommendPage.module.css';
 import Header from '../components/Header';
 
 const API_BASE_URL = 'http://localhost:8080/api/v1';
-const IMAGE_BASE_URL = `${API_BASE_URL}/recipes/image`;
+const IMAGE_BASE_URL = `${API_BASE_URL}/images`;
 
 const RecommendPage = () => {
   const navigate = useNavigate();
@@ -29,6 +29,7 @@ const RecommendPage = () => {
 
       if (response.ok) {
         const data = await response.json();
+        console.log('data: ', data)
         const recipesWithImageUrls = data.map(recipe => ({
           ...recipe,
           imageUrl: `${IMAGE_BASE_URL}/${recipe.image_name}`

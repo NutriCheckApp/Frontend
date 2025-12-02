@@ -4,7 +4,7 @@ import styles from './RecipeDetailPage.module.css';
 import Header from '../components/Header';
 
 const API_BASE_URL = 'http://localhost:8080/api/v1';
-const IMAGE_BASE_URL = `${API_BASE_URL}/recipes/image`;
+const IMAGE_BASE_URL = `${API_BASE_URL}/images`;
 
 const RecipeDetailPage = () => {
   const { id } = useParams();
