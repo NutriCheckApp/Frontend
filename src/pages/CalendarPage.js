@@ -1,7 +1,10 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import styles from './CalendarPage.module.css';
 import Header from '../components/Header';
 
+const API_BASE_URL = 'http://localhost:8080/api/v1/calendar';
+const IMAGE_BASE_URL = 'http://localhost:8080/api/v1/calendar/image/';
+const MEMO_API_URL = 'http://localhost:8080/api/v1/calendar/memo';  
 const weekdays = ['Mo', 'Tu', 'We', 'Th', 'Fr', 'Sa', 'Su'];
 
 function getMonthMatrix(year, month) {
@@ -10,8 +13,7 @@ function getMonthMatrix(year, month) {
   const matrix = [];
   let week = new Array(7).fill(null);
   let day = 1;
-  // fill initial nulls until first weekday (assuming Mon-start)
-  const startIndex = (first.getDay() + 6) % 7; // convert Sun=0 to Mon=0
+  const startIndex = (first.getDay() + 6) % 7;
   for (let i = 0; i < startIndex; i++) week[i] = null;
   for (let i = startIndex; day <= last.getDate(); i++) {
     week[i % 7] = new Date(year, month, day);
@@ -81,42 +83,136 @@ const Calendar = ({ onSelect, selectedDate }) => {
   );
 };
 
-const DogPanel = ({ selectedTime, uploadedImages, onImageUpload, canUpload }) => {
-  const handleFileUpload = (event) => {
+const DogPanel = ({ selectedDate, calendarData, onSave, canUpload, isLoading }) => {
+  const [memo, setMemo] = useState('');
+  const [imageFile, setImageFile] = useState(null);
+  const [isEditing, setIsEditing] = useState(false);
+  const [imagePreviewUrl, setImagePreviewUrl] = useState(null); 
+
+  useEffect(() => {
+    const prevImageUrl = calendarData?.imageUrl; 
+
+    if (calendarData) {
+      setMemo(calendarData.memo || '');
+      setImageFile(null);
+      setIsEditing(false);
+      setImagePreviewUrl(null); 
+    } else {
+      setMemo('');
+      setImageFile(null);
+      setIsEditing(false);
+      setImagePreviewUrl(null); 
+    }
+    
+    if (prevImageUrl && prevImageUrl.startsWith('blob:')) {
+        URL.revokeObjectURL(prevImageUrl);
+    }
+    
+    return () => {
+      if (imagePreviewUrl) URL.revokeObjectURL(imagePreviewUrl);
+    };
+  }, [calendarData]);
+
+  const handleFileChange = (event) => {
     const file = event.target.files[0];
     if (file) {
-      const reader = new FileReader();
-      reader.onload = (e) => {
-        onImageUpload(selectedTime, e.target.result);
-      };
-      reader.readAsDataURL(file);
+      setImageFile(file);
+      if (imagePreviewUrl) URL.revokeObjectURL(imagePreviewUrl);
+      setImagePreviewUrl(URL.createObjectURL(file));
     }
   };
 
-  const currentImage = uploadedImages[selectedTime];
+  const handleSave = async () => {
+    if (!memo && !imageFile && !calendarData?.imageUrl) {
+      alert('메모 또는 이미지를 입력해주세요.');
+      return;
+    }
+
+    await onSave(selectedDate, memo, imageFile, calendarData);
+    setImageFile(null);
+    setImagePreviewUrl(null); 
+    setIsEditing(false);
+  };
+
+  const handleEdit = () => {
+    setIsEditing(true);
+  };
+
+  const handleCancel = () => {
+    setMemo(calendarData?.memo || '');
+
+    setImageFile(null);
+    if (imagePreviewUrl) URL.revokeObjectURL(imagePreviewUrl);
+    setImagePreviewUrl(null);
+    setIsEditing(false);
+  };
+
+
+  const currentImage = imagePreviewUrl || calendarData?.imageUrl;
+  const hasData = calendarData?.imageUrl || calendarData?.memo;
+
+  if (isLoading) {
+    return (
+      <div className={styles.dogCard} style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', minHeight: 220 }}>
+        <div>로딩 중...</div>
+      </div>
+    );
+  }
 
   return (
-    <div className={styles.dogCard} style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', minHeight: 220, gap: '15px' }}>
+    <div className={styles.dogCard} style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '15px', padding: '20px' }}>
       {currentImage ? (
-        <img src={currentImage} alt={selectedTime} className={styles.dogPhoto} />
+        <img src={currentImage} alt="uploaded" className={styles.dogPhoto} style={{ maxWidth: '100%', maxHeight: '200px', borderRadius: '8px' }} />
       ) : (
         <div className={styles.placeholderImage}>
-          <span>사진을 업로드해주세요</span>
+          <span>{canUpload ? '이미지와 메모를 작성해주세요' : '저장된 데이터가 없습니다'}</span>
         </div>
       )}
-      {canUpload && (
+
+      {canUpload && (hasData ? isEditing : true) && (
         <>
           <input
             type="file"
             accept="image/*"
-            onChange={handleFileUpload}
+            onChange={handleFileChange}
             style={{ display: 'none' }}
-            id={`file-upload-${selectedTime}`}
+            id="file-upload"
           />
-          <label htmlFor={`file-upload-${selectedTime}`} className={styles.uploadButton}>
-            사진 선택
+          <label htmlFor="file-upload" className={styles.uploadButton} style={{ padding: '10px 20px', borderRadius: '8px', backgroundColor: '#ff6b6b', color: 'white', cursor: 'pointer', fontSize: '14px', fontWeight: '500' }}>
+            {imageFile ? imageFile.name : '사진 선택'}
           </label>
         </>
+      )}
+
+      <textarea
+        className={styles.memoInput}
+        placeholder={canUpload ? "메모를 입력하세요..." : ""}
+        value={memo}
+        onChange={(e) => setMemo(e.target.value)}
+        readOnly={!canUpload || (hasData && !isEditing)}
+        rows={4}
+        style={{ width: '100%', padding: '10px', borderRadius: '8px', border: '1px solid #ddd', resize: 'none', backgroundColor: (!canUpload || (hasData && !isEditing)) ? '#f5f5f5' : '#fff' }}
+      />
+
+      {canUpload && (
+        <div style={{ display: 'flex', gap: '10px' }}>
+          {hasData && !isEditing ? (
+            <button onClick={handleEdit} className={styles.saveButton} style={{ padding: '10px 20px', borderRadius: '8px', backgroundColor: '#2196F3', color: 'white', border: 'none', cursor: 'pointer' }}>
+              수정하기
+            </button>
+          ) : (
+            <>
+              <button onClick={handleSave} className={styles.saveButton} style={{ padding: '10px 20px', borderRadius: '8px', backgroundColor: '#4CAF50', color: 'white', border: 'none', cursor: 'pointer' }}>
+                저장
+              </button>
+              {hasData && isEditing && (
+                <button onClick={handleCancel} className={styles.saveButton} style={{ padding: '10px 20px', borderRadius: '8px', backgroundColor: '#999', color: 'white', border: 'none', cursor: 'pointer' }}>
+                  취소
+                </button>
+              )}
+            </>
+          )}
+        </div>
       )}
     </div>
   );
@@ -124,22 +220,171 @@ const DogPanel = ({ selectedTime, uploadedImages, onImageUpload, canUpload }) =>
 
 const CalendarPage = () => {
   const [selected, setSelected] = useState(new Date());
-  const [timeTab, setTimeTab] = useState('lunch');
-  const [uploadedImages, setUploadedImages] = useState({
-    morning: null,
-    lunch: null,
-    dinner: null,
-  });
+  const [calendarData, setCalendarData] = useState(null);
+  const [isLoading, setIsLoading] = useState(false);
 
-  // 기본 강아지 사진들 (과거 날짜용)
-  const defaultDogImages = {
-    morning: '/dog1.jpg',
-    lunch: '/dog2.jpg',
-    dinner: '/dog3.jpg',
+  useEffect(() => {
+    fetchCalendarData(selected);
+  }, [selected]);
+
+  const fetchImageWithAuth = async (imageFileName) => {
+    if (!imageFileName) return null;
+
+    const url = `${IMAGE_BASE_URL}${imageFileName}`;
+    const jwt = localStorage.getItem('jwt');
+
+    if (!jwt) {
+      console.warn('JWT not found. Skipping image fetch.');
+      return url; 
+    }
+
+    try {
+      const response = await fetch(url, {
+        method: 'GET',
+        headers: {
+          'Authorization': `Bearer ${jwt}`, 
+        },
+      });
+
+      if (response.ok) {
+        const blob = await response.blob();
+        return URL.createObjectURL(blob);
+      } else {
+        console.error(`Failed to fetch protected image: ${response.status}`);
+        return null;
+      }
+    } catch (error) {
+      console.error('Error fetching image:', error);
+      return null;
+    }
   };
 
-  // 날짜별 이미지 데이터 저장
-  const [dailyImages, setDailyImages] = useState({});
+  const fetchCalendarData = async (date) => {
+    setIsLoading(true);
+    const formattedDate = formatDate(date);
+    
+    try {
+      const jwt = localStorage.getItem('jwt');
+      const metaResponse = await fetch(`${API_BASE_URL}?date=${formattedDate}`, {
+        method: 'GET',
+        headers: {
+          'Content-Type': 'application/json',
+          ...(jwt && { 'Authorization': `Bearer ${jwt}` })
+        }
+      });
+
+      if (metaResponse.ok) {
+        const data = await metaResponse.json();
+        const imageName = data.image_name;
+        
+        let imageUrl = null;
+        if (imageName) {
+          const localUrl = await fetchImageWithAuth(imageName);
+          imageUrl = localUrl;
+        }
+
+        const processedData = {
+          ...data,
+          imageUrl: imageUrl, 
+        };
+
+        setCalendarData(processedData);
+      } else if (metaResponse.status === 404) {
+        setCalendarData(null);
+      }
+    } catch (err) {
+      console.error('캘린더 데이터 로딩 실패:', err);
+      setCalendarData(null);
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  const handleSaveCalendarData = async (date, memo, imageFile, currentCalendarData) => {
+    setIsLoading(true);
+    const formattedDate = formatDate(date);
+    const jwt = localStorage.getItem('jwt');
+    
+    try {
+      let response;
+      let data;
+
+      if (!imageFile && currentCalendarData?.memo !== memo) {
+        // Only memo update
+        response = await fetch(MEMO_API_URL, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            ...(jwt && { 'Authorization': `Bearer ${jwt}` })
+          },
+          body: JSON.stringify({ date: formattedDate, memo: memo })
+        });
+        
+        if (response.ok) {
+            data = await response.json();
+        }
+
+      } else {
+        // Image or Image+Memo update
+        const formData = new FormData();
+        formData.append('date', formattedDate);
+        formData.append('memo', memo);
+        
+        if (imageFile) {
+          formData.append('file', imageFile);
+        }
+
+        response = await fetch(`${API_BASE_URL}`, {
+          method: 'POST',
+          headers: {
+            ...(jwt && { 'Authorization': `Bearer ${jwt}` })
+          },
+          body: formData
+        });
+        
+        if (response.ok) {
+            data = await response.json();
+        }
+      }
+
+      if (response.ok) {
+        alert('저장되었습니다!');
+        
+        const imageName = data.image_name;
+        let imageUrl = currentCalendarData?.imageUrl; // Preserve existing URL unless new image is uploaded
+
+        if (imageName) {
+            const localUrl = await fetchImageWithAuth(imageName);
+            imageUrl = localUrl;
+        } else if (!imageName && imageFile) {
+            imageUrl = null; 
+        } else if (!imageName && currentCalendarData?.imageUrl && !imageFile) {
+            // Case where we only updated memo, keep original image URL
+            imageUrl = currentCalendarData.imageUrl;
+        }
+        
+        const processedData = {
+            ...data,
+            imageUrl: imageUrl,
+        };
+        setCalendarData(processedData);
+      } else {
+        alert('저장에 실패했습니다.');
+      }
+    } catch (err) {
+      console.error('캘린더 데이터 저장 실패:', err);
+      alert('저장에 실패했습니다.');
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  const formatDate = (date) => {
+    const year = date.getFullYear();
+    const month = String(date.getMonth() + 1).padStart(2, '0');
+    const day = String(date.getDate()).padStart(2, '0');
+    return `${year}-${month}-${day}`;
+  };
 
   const goDay = (dir) => {
     setSelected((prev) => {
@@ -149,41 +394,6 @@ const CalendarPage = () => {
     });
   };
 
-  const handleImageUpload = (timeSlot, imageData) => {
-    const dateKey = selected.toDateString();
-    
-    setDailyImages(prev => ({
-      ...prev,
-      [dateKey]: {
-        ...prev[dateKey],
-        [timeSlot]: imageData
-      }
-    }));
-  };
-
-  // 현재 선택된 날짜의 이미지들 가져오기
-  const getCurrentDayImages = () => {
-    const dateKey = selected.toDateString();
-    const today = new Date();
-    const isToday = selected.toDateString() === today.toDateString();
-    const selectedDate = new Date(selected.getFullYear(), selected.getMonth(), selected.getDate());
-    const todayDate = new Date(today.getFullYear(), today.getMonth(), today.getDate());
-    const isFuture = selectedDate > todayDate;
-    
-    // 업로드된 이미지가 있으면 그걸 사용
-    if (dailyImages[dateKey]) {
-      return dailyImages[dateKey];
-    }
-    
-    // 오늘이거나 미래면 빈 상태, 과거 날짜면 기본 강아지 사진 표시
-    if (isToday || isFuture) {
-      return { morning: null, lunch: null, dinner: null };
-    } else {
-      return defaultDogImages;
-    }
-  };
-
-  // 오늘이거나 미래인지 확인 (업로드 가능한 날짜)
   const canUpload = () => {
     const today = new Date();
     const selectedDate = new Date(selected.getFullYear(), selected.getMonth(), selected.getDate());
@@ -211,13 +421,14 @@ const CalendarPage = () => {
             </div>
             <div />
           </div>
-          <div className={styles.timeTabsBar}>
-            <button className={`${styles.timeTabBtn} ${timeTab === 'morning' ? styles.activeTab : ''}`} onClick={() => setTimeTab('morning')}>아침</button>
-            <button className={`${styles.timeTabBtn} ${timeTab === 'lunch' ? styles.activeTab : ''}`} onClick={() => setTimeTab('lunch')}>점심</button>
-            <button className={`${styles.timeTabBtn} ${timeTab === 'dinner' ? styles.activeTab : ''}`} onClick={() => setTimeTab('dinner')}>저녁</button>
-          </div>
           <div className={styles.timeContent}>
-            <DogPanel selectedTime={timeTab} uploadedImages={getCurrentDayImages()} onImageUpload={handleImageUpload} canUpload={canUpload()} />
+            <DogPanel 
+              selectedDate={selected}
+              calendarData={calendarData}
+              onSave={handleSaveCalendarData}
+              canUpload={canUpload()}
+              isLoading={isLoading}
+            />
           </div>
         </div>
       </div>

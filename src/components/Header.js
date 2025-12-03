@@ -13,7 +13,40 @@ const Header = ({ onProfileClick }) => {
   const location = useLocation();
   const [indicatorLeft, setIndicatorLeft] = useState(0);
   const [hideHeader, setHideHeader] = useState(false);
+  const [showProfileMenu, setShowProfileMenu] = useState(false);
   const lastScrollY = useRef(0);
+  const profileMenuRef = useRef(null);
+
+  const handleProfileClick = () => {
+    const jwt = localStorage.getItem('jwt');
+    if (jwt) {
+      setShowProfileMenu(!showProfileMenu);
+    } else {
+      onProfileClick && onProfileClick();
+    }
+  };
+
+  const handleLogout = () => {
+    localStorage.removeItem('jwt');
+    setShowProfileMenu(false);
+    navigate('/');
+  };
+
+  const handleMyPageClick = () => {
+    setShowProfileMenu(false);
+    navigate('/mypage');
+  };
+
+  // 프로필 메뉴 외부 클릭 시 닫기
+  useEffect(() => {
+    const handleClickOutside = (event) => {
+      if (profileMenuRef.current && !profileMenuRef.current.contains(event.target)) {
+        setShowProfileMenu(false);
+      }
+    };
+    document.addEventListener('mousedown', handleClickOutside);
+    return () => document.removeEventListener('mousedown', handleClickOutside);
+  }, []);
 
   // 스크롤 시 헤더 숨김 처리
   useEffect(() => {
@@ -47,7 +80,7 @@ const Header = ({ onProfileClick }) => {
     try {
       const path = location && location.pathname ? location.pathname : '';
       if (path.startsWith('/calendar')) activeRef = menu2Ref;
-      else if (path.startsWith('/analysis')) activeRef = menu3Ref;
+      else if (path.startsWith('/analysis') || path.startsWith('/recipe/')) activeRef = menu3Ref;
       else if (path.startsWith('/mypage')) activeRef = menu5Ref;
       else activeRef = menu4Ref;
     } catch (e) {
@@ -87,7 +120,7 @@ const Header = ({ onProfileClick }) => {
     try {
       const path = location && location.pathname ? location.pathname : '';
       if (path.startsWith('/calendar')) return menu2Ref;
-      if (path.startsWith('/analysis')) return menu3Ref;
+      if (path.startsWith('/analysis') || path.startsWith('/recipe/')) return menu3Ref;
       if (path.startsWith('/mypage')) return menu5Ref;
     } catch (e) {
       // fall through
@@ -97,7 +130,16 @@ const Header = ({ onProfileClick }) => {
 
   return (
     <>
-      <div style={{position: 'fixed', top: 10, left: 180, zIndex: 1200}}>
+      <div 
+        style={{
+          position: 'fixed', 
+          top: 10, 
+          left: 180, 
+          zIndex: 1200,
+          transform: hideHeader ? 'translateY(-100px)' : 'translateY(0)',
+          transition: 'transform 0.35s cubic-bezier(0.4,0,0.2,1)',
+        }}
+      >
         <NutriCheckLogo type="compact" />
       </div>
       <div
@@ -133,6 +175,8 @@ const Header = ({ onProfileClick }) => {
           ref={menu5Ref}
           className={styles.menu5}
           onMouseEnter={() => handleMouseEnter(menu5Ref)}
+          onClick={() => navigate('/mypage')}
+          style={{ cursor: 'pointer' }}
         >
           마이페이지
         </b>
@@ -142,19 +186,33 @@ const Header = ({ onProfileClick }) => {
           style={{ left: `${indicatorLeft}px` }}
         />
 
-        <div
-          className={styles.profileCircle}
-          onClick={() => onProfileClick && onProfileClick()}
-          role="button"
-          tabIndex={0}
-          onKeyDown={(e) => { if (e.key === 'Enter') onProfileClick && onProfileClick(); }}
-        />
-        <div
-          className={styles.profileIcon}
-          onClick={() => onProfileClick && onProfileClick()}
-          style={{ cursor: 'pointer' }}
-        >
-          <FaUser size={30} color="#222" />
+        <div ref={profileMenuRef} className={styles.profileContainer}>
+          <div
+            className={styles.profileCircle}
+            onClick={handleProfileClick}
+            role="button"
+            tabIndex={0}
+            onKeyDown={(e) => { if (e.key === 'Enter') handleProfileClick(); }}
+          >
+            <div
+              className={styles.profileIcon}
+              onClick={handleProfileClick}
+              style={{ cursor: 'pointer' }}
+            >
+              <FaUser size={30} color="#222" />
+            </div>
+          </div>
+
+          {showProfileMenu && (
+            <div className={styles.profileMenu}>
+              <button className={styles.menuItem} onClick={handleMyPageClick}>
+                마이페이지
+              </button>
+              <button className={styles.menuItem} onClick={handleLogout}>
+                로그아웃
+              </button>
+            </div>
+          )}
         </div>
       </div>
     </>

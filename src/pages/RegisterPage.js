@@ -9,19 +9,30 @@ const RegisterPage = () => {
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
   const [email, setEmail] = useState('');
-  const [dogWeight, setDogWeight] = useState('');
-  const [dogGender, setDogGender] = useState('M');
-
+  const [petWeight, setDogWeight] = useState('');
+  const [petGender, setDogGender] = useState('M');
+  const [petAge, setPetAge] = useState(''); 
+  const [activityLevel, setActivityLevel] = useState('NORMAL'); 
 
   const [error, setError] = useState('');
   const [successMessage, setSuccessMessage] = useState(''); 
   const [isLoading, setIsLoading] = useState(false);        
 
+  const getActivityLabel = (level) => {
+      switch (level) {
+          case 'INACTIVE': return '비활동적';
+          case 'NORMAL': return '보통';
+          case 'ACTIVE': return '활동적';
+          case 'VERY_ACTIVE': return '매우 활동적';
+          default: return level;
+      }
+  };
+
   const handleSubmit = async (event) => {
     event.preventDefault();
 
     setSuccessMessage('');
-    if (!username || !password || !email ) {
+    if (!username || !password || !email || !petWeight || !petAge ) {
       setError('모든 필드를 입력해주세요.');
       return;
     }
@@ -29,6 +40,15 @@ const RegisterPage = () => {
       setError('비밀번호는 최소 6자 이상이어야 합니다.');
       return;
     }
+    if (isNaN(parseFloat(petWeight)) || parseFloat(petWeight) <= 0) {
+        setError('유효한 강아지 무게를 입력해주세요.');
+        return;
+    }
+    if (isNaN(parseInt(petAge)) || parseInt(petAge) <= 0) {
+        setError('유효한 강아지 나이 (월)를 입력해주세요.');
+        return;
+    }
+
      setError('');
         
       // --- 2. Send data to server
@@ -38,7 +58,11 @@ const RegisterPage = () => {
             username: username,
             email: email,
             password: password,
-        };
+            pet_weight: parseFloat(petWeight),  
+            gender: petGender,  
+            pet_age: parseInt(petAge, 10),
+            activity_level: activityLevel,
+    };
 
       try {
             const response = await fetch(API_URL, {
@@ -67,6 +91,8 @@ const RegisterPage = () => {
             setEmail('');
             setDogWeight('');
             setDogGender('M');
+            setPetAge('');
+            setActivityLevel('NORMAL');
 
             // 1초 후 메인 페이지로 이동
             setTimeout(() => {
@@ -102,13 +128,36 @@ const RegisterPage = () => {
         </label>
         <label className={styles.label}>
           강아지 무게 (kg)
-          <input className={styles.input} type="number" value={dogWeight} onChange={e => setDogWeight(e.target.value)} placeholder="5.5" min="0.5" max="100" step="0.1" />
+          <input className={styles.input} type="number" value={petWeight} onChange={e => setDogWeight(e.target.value)} placeholder="5.5" min="0.5" max="100" step="0.1" />
         </label>
         <label className={styles.label}>
-          강아지 성별
-          <select className={styles.input} value={dogGender} onChange={e => setDogGender(e.target.value)}>
+          강아지 성별 (중성화 여부 포함)
+          <select className={styles.input} value={petGender} onChange={e => setDogGender(e.target.value)}>
             <option value="M">수컷</option>
             <option value="F">암컷</option>
+            <option value="NM">중성화 수컷</option>
+            <option value="SF">중성화 암컷</option>
+          </select>
+        </label>
+        <label className={styles.label}>
+          강아지 나이 (개월)
+          <input 
+            className={styles.input} 
+            type="number" 
+            value={petAge} 
+            onChange={e => setPetAge(e.target.value)} 
+            placeholder="12 (= 1년)" 
+            min="1" 
+            step="1" 
+          />
+        </label>
+        <label className={styles.label}>
+          활동 수준
+          <select className={styles.input} value={activityLevel} onChange={e => setActivityLevel(e.target.value)}>
+            <option value="INACTIVE">{getActivityLabel('INACTIVE')}</option>
+            <option value="NORMAL">{getActivityLabel('NORMAL')}</option>
+            <option value="ACTIVE">{getActivityLabel('ACTIVE')}</option>
+            <option value="VERY_ACTIVE">{getActivityLabel('VERY_ACTIVE')}</option>
           </select>
         </label>
         {error && <div className={styles.error}>{error}</div>}

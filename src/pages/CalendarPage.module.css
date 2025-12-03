@@ -105,6 +105,7 @@
   min-height: 70px;
   border-radius: 10px;
   display: flex;
+  flex-direction: column;
   align-items: center;
   justify-content: center;
   padding: 8px;
@@ -112,6 +113,7 @@
   color: #333;
   border: 1px solid transparent;
   box-sizing: border-box;
+  position: relative;
 }
 .dayNumber {
   font-size: 14px;
@@ -121,6 +123,7 @@
   background: #ff6b6b;
   color: #fff;
   display: flex;
+  flex-direction: column;
   align-items: center;
   justify-content: center;
 }
@@ -128,7 +131,6 @@
   background: #ffdede;
   box-shadow: 0 6px 18px rgba(255,107,107,0.08);
 }
-
 
 .rightHeader {
   display: flex;
@@ -152,23 +154,6 @@
   font-size: 16px;
 }
 
-/* Dog Time */
-
-.timeTabsBar {
-  display: flex;
-  gap: 12px;
-  margin-bottom: 12px;
-}
-.timeTabBtn {
-  background: #f0f0f0;
-  border: none;
-  padding: 8px 16px;
-  border-radius: 999px;
-  cursor: pointer;
-}
-.timeTabBtn.activeTab {
-  background: #e9f1f0;
-}
 .timeContent {
   min-height: 220px;
 }
@@ -181,6 +166,7 @@
   align-items: center;
   padding-top: 40px;
 }
+
 .dogPhoto {
   width: 280px;
   height: 320px;
