@@ -186,20 +186,21 @@ const Header = ({ onProfileClick }) => {
           style={{ left: `${indicatorLeft}px` }}
         />
 
-        <div ref={profileMenuRef} style={{ position: 'relative' }}>
+        <div ref={profileMenuRef} className={styles.profileContainer}>
           <div
             className={styles.profileCircle}
             onClick={handleProfileClick}
             role="button"
             tabIndex={0}
             onKeyDown={(e) => { if (e.key === 'Enter') handleProfileClick(); }}
-          />
-          <div
-            className={styles.profileIcon}
-            onClick={handleProfileClick}
-            style={{ cursor: 'pointer' }}
           >
-            <FaUser size={30} color="#222" />
+            <div
+              className={styles.profileIcon}
+              onClick={handleProfileClick}
+              style={{ cursor: 'pointer' }}
+            >
+              <FaUser size={30} color="#222" />
+            </div>
           </div>
 
           {showProfileMenu && (

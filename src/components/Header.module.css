@@ -65,11 +65,17 @@
 /*.menu4 { left: 113px; }  필요 시 */
 .menu5 { left: 515px; } /* 마이페이지 */
 
-/* 프로필 */
-.profileCircle {
+/* 프로필 컨테이너 */
+.profileContainer {
   position: absolute;
   top: 0px;
   left: 798px;
+  z-index: 10000;
+}
+
+/* 프로필 */
+.profileCircle {
+  position: relative;
   width: 60px;
   height: 60px;
   border-radius: 50%;
@@ -80,7 +86,7 @@
 .profileIcon {
   position: absolute;
   top: 15px;
-  left: 813px;
+  left: 15px;
   width: 30px;
   height: 30px;
   cursor: pointer;
@@ -90,13 +96,13 @@
 .profileMenu {
   position: absolute;
   top: 70px;
-  right: 0;
+  right: -10px;
   background-color: white;
   border-radius: 12px;
   box-shadow: 0 4px 16px rgba(0, 0, 0, 0.15);
   padding: 8px;
   min-width: 160px;
-  z-index: 1100;
+  z-index: 9999;
   animation: fadeIn 0.2s ease-in-out;
 }
 
