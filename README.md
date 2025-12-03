@@ -8,7 +8,7 @@ Maintain a balanced diet, monitor nutritional intake, and keep a history of what
 Features:
 
 * **Pet Food and Meal Logging:** Easily track food logs and specific meal times.
-* **Daily Journal and Photos:** Includes a calendar feature to log daily notes and upload pictures related to your pet's health and meals.
+* **Dietary Ration Calculation:** Automatically calculates the optimal food ration and required calorie intake based on the pet's weight, age, breed, activity level, and other individual factors.
 * **Step-by-Step Recipe Recommendations:** Provides personalized recipes with detailed, sequential instructions for preparing homemade pet treats and meals. 
 * **Health Monitoring:** Comprehensive monitoring of weight changes and overall dietary compliance.
 * **Multi-Pet Profiles:** Set up and manage detailed profiles for multiple pets (including breed, age, weight, and activity level).
