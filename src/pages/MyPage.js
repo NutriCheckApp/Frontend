@@ -65,7 +65,12 @@ const MyPage = () => {
           pet_weight: pet.pet_weight,
           Gender: pet.pet_gender,
           pet_age: pet.pet_age,
-          activityLevel: pet.activity_level
+          activityLevel: pet.activity_level,
+          dailyCalories: pet.daily_calories,
+          dailyCrudeProtein: pet.daily_crude_protein,
+          dailyCrudeFat: pet.daily_crude_fat,
+          dailyCrudeFiber: pet.daily_crude_fiber,
+          dailyCalcium: pet.daily_calcium
         });
       } else {
         setUserInfo(data);
@@ -95,7 +100,18 @@ const MyPage = () => {
   };
 
   const getGenderLabel = (gender) => {
-    return gender === 'M' ? '수컷' : '암컷';
+    switch (gender) {
+      case 'M':
+      case 'MALE': return '수컷';
+      case 'F':
+      case 'FEMALE': return '암컷';
+      case 'NM':
+      case 'NEUTERED_MALE': return '중성화 수컷';
+      case 'NF':
+      case 'SF':
+      case 'SPAYED_FEMALE': return '중성화 암컷';
+      default: return gender;
+    }
   };
 
   if (isLoading) {
@@ -167,6 +183,42 @@ const MyPage = () => {
                   <div className={styles.infoItem}>
                     <span className={styles.label}>활동 수준</span>
                     <span className={styles.value}>{getActivityLabel(userInfo.activityLevel)}</span>
+                  </div>
+                </div>
+              </div>
+
+              <div className={styles.section}>
+                <h3 className={styles.sectionTitle}>📊 하루 권장 영양 정보</h3>
+                <div className={styles.infoGrid}>
+                  <div className={styles.infoItem}>
+                    <span className={styles.label}>칼로리</span>
+                    <span className={styles.value}>
+                      {userInfo.dailyCalories ? `${userInfo.dailyCalories.toFixed(1)} kcal` : '미설정'}
+                    </span>
+                  </div>
+                  <div className={styles.infoItem}>
+                    <span className={styles.label}>조단백질</span>
+                    <span className={styles.value}>
+                      {userInfo.dailyCrudeProtein ? `${userInfo.dailyCrudeProtein.toFixed(1)} g` : '미설정'}
+                    </span>
+                  </div>
+                  <div className={styles.infoItem}>
+                    <span className={styles.label}>조지방</span>
+                    <span className={styles.value}>
+                      {userInfo.dailyCrudeFat ? `${userInfo.dailyCrudeFat.toFixed(1)} g` : '미설정'}
+                    </span>
+                  </div>
+                  <div className={styles.infoItem}>
+                    <span className={styles.label}>조섬유</span>
+                    <span className={styles.value}>
+                      {userInfo.dailyCrudeFiber ? `${userInfo.dailyCrudeFiber.toFixed(1)} mg` : '미설정'}
+                    </span>
+                  </div>
+                  <div className={styles.infoItem}>
+                    <span className={styles.label}>칼슘</span>
+                    <span className={styles.value}>
+                      {userInfo.dailyCalcium ? `${userInfo.dailyCalcium.toFixed(1)} g` : '미설정'}
+                    </span>
                   </div>
                 </div>
               </div>

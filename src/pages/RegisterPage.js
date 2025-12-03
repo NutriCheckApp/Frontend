@@ -20,10 +20,10 @@ const RegisterPage = () => {
 
   const getActivityLabel = (level) => {
       switch (level) {
-          case 'INACTIVE': return 'INACTIVE';
-          case 'NORMAL': return 'NORMAL';
-          case 'ACTIVE': return 'ACTIVE';
-          case 'VERY_ACTIVE': return 'VERY ACTIVE';
+          case 'INACTIVE': return '비활동적';
+          case 'NORMAL': return '보통';
+          case 'ACTIVE': return '활동적';
+          case 'VERY_ACTIVE': return '매우 활동적';
           default: return level;
       }
   };
@@ -131,10 +131,12 @@ const RegisterPage = () => {
           <input className={styles.input} type="number" value={petWeight} onChange={e => setDogWeight(e.target.value)} placeholder="5.5" min="0.5" max="100" step="0.1" />
         </label>
         <label className={styles.label}>
-          강아지 성별
+          강아지 성별 (중성화 여부 포함)
           <select className={styles.input} value={petGender} onChange={e => setDogGender(e.target.value)}>
             <option value="M">수컷</option>
             <option value="F">암컷</option>
+            <option value="NM">중성화 수컷</option>
+            <option value="SF">중성화 암컷</option>
           </select>
         </label>
         <label className={styles.label}>

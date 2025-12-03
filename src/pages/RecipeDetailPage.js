@@ -104,7 +104,7 @@ const RecipeDetailPage = () => {
                 <p>총 칼로리: {recipe.calories} kcal</p>
                 <p>조단백질: {recipe.CrudeProtein}g</p>
                 <p>조지방: {recipe.CrudeFat}g</p>
-                <p>조섬유: {recipe.CrudeFiber}g</p>
+                <p>칼슘: {recipe.calcium}g</p>
               </div>
             </div>
           </div>

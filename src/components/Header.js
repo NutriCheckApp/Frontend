@@ -13,16 +13,40 @@ const Header = ({ onProfileClick }) => {
   const location = useLocation();
   const [indicatorLeft, setIndicatorLeft] = useState(0);
   const [hideHeader, setHideHeader] = useState(false);
+  const [showProfileMenu, setShowProfileMenu] = useState(false);
   const lastScrollY = useRef(0);
+  const profileMenuRef = useRef(null);
 
   const handleProfileClick = () => {
     const jwt = localStorage.getItem('jwt');
     if (jwt) {
-      navigate('/mypage');
+      setShowProfileMenu(!showProfileMenu);
     } else {
       onProfileClick && onProfileClick();
     }
   };
+
+  const handleLogout = () => {
+    localStorage.removeItem('jwt');
+    setShowProfileMenu(false);
+    navigate('/');
+  };
+
+  const handleMyPageClick = () => {
+    setShowProfileMenu(false);
+    navigate('/mypage');
+  };
+
+  // 프로필 메뉴 외부 클릭 시 닫기
+  useEffect(() => {
+    const handleClickOutside = (event) => {
+      if (profileMenuRef.current && !profileMenuRef.current.contains(event.target)) {
+        setShowProfileMenu(false);
+      }
+    };
+    document.addEventListener('mousedown', handleClickOutside);
+    return () => document.removeEventListener('mousedown', handleClickOutside);
+  }, []);
 
   // 스크롤 시 헤더 숨김 처리
   useEffect(() => {
@@ -162,19 +186,33 @@ const Header = ({ onProfileClick }) => {
           style={{ left: `${indicatorLeft}px` }}
         />
 
-        <div
-          className={styles.profileCircle}
-          onClick={handleProfileClick}
-          role="button"
-          tabIndex={0}
-          onKeyDown={(e) => { if (e.key === 'Enter') handleProfileClick(); }}
-        />
-        <div
-          className={styles.profileIcon}
-          onClick={handleProfileClick}
-          style={{ cursor: 'pointer' }}
-        >
-          <FaUser size={30} color="#222" />
+        <div ref={profileMenuRef} className={styles.profileContainer}>
+          <div
+            className={styles.profileCircle}
+            onClick={handleProfileClick}
+            role="button"
+            tabIndex={0}
+            onKeyDown={(e) => { if (e.key === 'Enter') handleProfileClick(); }}
+          >
+            <div
+              className={styles.profileIcon}
+              onClick={handleProfileClick}
+              style={{ cursor: 'pointer' }}
+            >
+              <FaUser size={30} color="#222" />
+            </div>
+          </div>
+
+          {showProfileMenu && (
+            <div className={styles.profileMenu}>
+              <button className={styles.menuItem} onClick={handleMyPageClick}>
+                마이페이지
+              </button>
+              <button className={styles.menuItem} onClick={handleLogout}>
+                로그아웃
+              </button>
+            </div>
+          )}
         </div>
       </div>
     </>
