@@ -1,5 +1,25 @@
 # NutriCheck App
 
+### ✅ 구성원 기여 내역
+* **고유빈**
+  * 회원가입 제작
+  * 로그인 제작
+  * 달력 페이지 제작
+  * 레시피 추천 페이지 제작
+  * 마이페이지 제작
+* **김민우** 
+  * 캘린더 기능 구현
+  * 레시피 추천 페이지 기능 구현, 발표
+* **김병철** 
+  * 사료 성분을 통해 하루 영양성분 추천량 기능 구현
+* **자하르** 
+  * 회원가입 및 보안 기능 구현
+  * 동물 정보 처리 및 이미지 처리 기능 구현
+  * Frontend와 DB 연동
+* **권현우** 
+  * DB설계
+  * 칼로리 계산 기능 구현
+
 This project serves as the Frontend Web Application for the pet food tracking system, built with React.
 
 This application is designed to help pet owners easily track their pets' food consumption. 
